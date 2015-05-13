@@ -18,17 +18,13 @@ public class Clause {
   }
 
   // The list of Atom ids
-  public ArrayList<String> atomIds;
+  public ArrayList<Atom> atomIds;
 
   // Whether the literals corresponding to atoms are negated (true) or not (false)
   public ArrayList<Boolean> negated;
 
-  // Whether the clause is satisfied by the current assignment
-  public boolean sat = false;
-
-  public boolean isSat() {
-    return sat;
-  }
+  /**
+   * 
 
   // Returns string representation of Clause object
   public String toString() {
