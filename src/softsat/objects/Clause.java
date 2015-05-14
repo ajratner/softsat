@@ -13,16 +13,21 @@ public class Clause {
    * w.p. 1 - exp(-logWeight)
    */
   private double logWeight = Double.POSITIVE_INFINITY;
-
   public double getLogWeight() { return logWeight; }
-
   public boolean isHard() { return logWeight == Double.POSITIVE_INFINITY; }
 
   /**
    * The literals comprising the clause.  An ArrayList of Literal objects, each of which
    * represents either the negation or not of a single Variable which it references.
    */
-  public ArrayList<Literal> literals;
+  private ArrayList<Literal> literals;
+  public ArrayList<Literal> getLiterals() { return literals; }
+  
+  public ArrayList<Variable> getVars() {
+    ArrayList<Variable> vars = new ArrayList<Variable>();
+    for (Literal literal : literals) { vars.add(literal.getVar()); }
+    return vars;
+  }
 
   /**
    * Whether the clause is active.  In the context of MC-SAT for example: each iteration MC-SAT
@@ -31,16 +36,8 @@ public class Clause {
    * [SERIAL]
    */
   private boolean active = false;
-
   public boolean isActive() { return active; }
-
   public boolean setActive(boolean active) { this.active = active; }
-
-
-  /**
-   * Number of satisfied literals.
-   */
-  public int nSat = 0;
 
   /**
    * Tests whether the clause is satisfied given the Variable's assignments.

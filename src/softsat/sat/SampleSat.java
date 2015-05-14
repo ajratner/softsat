@@ -15,8 +15,11 @@ import java.util.HashSet;
  */
 public class SampleSat {
   Random rand = new Random();
+  
   private ArrayList<Clause> clauses;
   private ArrayList<Variable> vars;
+
+  private HashSet<Clause> unsatisfied;
 
   /**
    * The clusterId of the cluster we are currently in, which lets us filter out Variables
@@ -24,23 +27,29 @@ public class SampleSat {
    */
   private int clusterId;
 
-  private HashSet<Clause> unsatisfied;
-
   /**
-   * Reset the current assignments of all variables in the current cluster
+   * Initializes the primary counts / data structures for SampleSat.  Optionally resets the
+   * variable assignments, then populates the unsatisfied HashSet, generates initial make / 
+   * break counts from scratch.
    */
-  private void resetAssignments() {
-    for (Variable var : vars) {
-      if (var.getClusterId() == clusterId) { var.randomFlip(); }
+  private void init(boolean resetAssignments) {
+    
+    // Optionally randomly reset the assignments of the active (ie in-cluster) vars
+    if (resetAssignments) {
+      for (Variable var : vars) {
+        if (var.getClusterId() == clusterId) { var.randomFlip(); }
+      }
+    }
+
+    // Set the make/break counts in the vars
+    for (Variable var : vars) { var.setMakeBreakCounts(); }
+
+    // Populate the HashSet of unsat clauses
+    unsatisfied = new HashSet<Clause>();
+    for (Clause clause : clauses) {
+      if (!clause.isSat()) { unsatisfied.add(clause); }
     }
   }
-
-  /**
-   * 
-   * TODO: we can make this incremental eg the outer MC-SAT loop can keep the make / break
-   * counts up to date so that we don't need to re-do completely each time
-   */
-  //private void generateMakeBreakCounts() {
 
   /**
    * Runs SampleSat, assuming all the clauses are 'hard' ie having weight infinity.
@@ -48,8 +57,8 @@ public class SampleSat {
    * @return true iff a satisfying assignment is found 
    */
   public boolean run(long nSteps) {
-    unsatisfied = new HashSet<Clause>();
-    //for (long step = 0; step < nSteps; step++) {
+    init(true);
+    // TODO: for (long step = 0; step < nSteps; step++) {
   }
 
   // TODO: implement WalkSat as special case of SampleSat
@@ -59,9 +68,7 @@ public class SampleSat {
     this.clauses = clauses;
     HashSet<Variable> uniqueVars = new HashSet<Variable>();
     for (Clause clause : clauses) {
-      for (Literal literal : clause.literals) {
-        uniqueVars.add(literal.getVar());
-      }
+      for (Variable var : clause.getVars()) { uniqueVars.add(var); }
     }
     this.vars = new ArrayList<Variable>(uniqueVars);
   }

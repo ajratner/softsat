@@ -54,31 +54,33 @@ public class BGMCSatDataGenerator {
       clusters.add(generateRandomKSAT(clusterId,n,k,alpha));
     }
 
+    // Generate the soft 'connector' inter-cluster clauses
     for (int softClauseId=0; softClauseId < numSoftClauses; softClauseId++) {
       int[] varIds = new int[clusterNodesPerSoftClause];
       boolean[] negateds = new boolean[clusterNodesPerSoftClause];
 
       for (int clusterNodeId = 0; clusterNodeId < clusterNodesPerSoftClause; clusterNodeId++) {
-	varIds[clusterNodeId] = rand.nextInt(n);
-	negateds[clusterNodeId] = rand.nextBoolean();
+        varIds[clusterNodeId] = rand.nextInt(n);
+        negateds[clusterNodeId] = rand.nextBoolean();
       }
 
       for (int clusterId1 = 0; clusterId1 < nClusters - 1; clusterId1++) {
-	for (int clusterId2 = clusterId1 + 1; clusterId2 < nClusters; clusterId2++) {
-	  ArrayList<Literal> literals = new ArrayList<Literal>();
-	  for (int litId = 0; litId < varIds.length; litId++) {
-	    literals.add(new Literal(new Variable(clusterId1,varIds[litId]),negateds[litId]));
-	    literals.add(new Literal(new Variable(clusterId2,varIds[litId]),negateds[litId]));
-	  }
-	  /* [SERIAL] */
-	  Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
-	  clusters.get(clusterId1).add(softClause);
-	  clusters.get(clusterId2).add(softClause);
-	}
+        for (int clusterId2 = clusterId1 + 1; clusterId2 < nClusters; clusterId2++) {
+          ArrayList<Literal> literals = new ArrayList<Literal>();
+          for (int litId = 0; litId < varIds.length; litId++) {
+            literals.add(new Literal(new Variable(clusterId1,varIds[litId]),negateds[litId]));
+            literals.add(new Literal(new Variable(clusterId2,varIds[litId]),negateds[litId]));
+          }
+          /* [SERIAL] */
+          Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
+          clusters.get(clusterId1).add(softClause);
+          clusters.get(clusterId2).add(softClause);
+        }
       }
     }
+
+    // Set the pointers from Variable to Cluster for the set then return
+    DatasetGeneratorUtils.setClausesIn(clusters);
     return clusters;
   }
-
-
 } 
