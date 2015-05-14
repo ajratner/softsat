@@ -36,14 +36,16 @@ public class Clause {
     StringBuilder s = new StringBuilder();
     for (Literal l : literals)
       s.append("  " + l.toString());
-    return "( " + s.toString() + " )  w = " + String.valueOf(weight);
+    return "( " + s.toString() + " )  w = " + String.valueOf(logWeight);
   }
 
   public Clause(ArrayList<Literal> literals) {
     this.literals = literals;
   }
 
-  public Clause() {
-    this.literals = new ArrayList<Literal>();
+  public Clause(ArrayList<Literal> literals, double logWeight) {
+    this.literals = literals;
+    this.logWeight = logWeight;
   }
+
 }
