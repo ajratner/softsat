@@ -7,15 +7,16 @@ import softsat.objects.Variable;
  */
 public class Literal {
   private Variable var;
-  private boolean sign;
-  
-  public String toString() {
-    return (sign ? "-" : "") + var.toString();
-  }
+  public Variable getVar() { return var; }
+  private boolean negated;
 
-  public Literal(Variable var, boolean sign) {
+  public boolean isSat() { return var.getValue() != negated; }
+  
+  public String toString() { return (negated ? "-" : "") + var.toString(); }
+
+  public Literal(Variable var, boolean negated) {
     this.var = var;
-    this.sign = sign;
+    this.negated = negated;
   }
 
 }

@@ -1,7 +1,6 @@
 package softsat.main;
 import softsat.objects.Variable;
 import softsat.objects.Literal;
-import softsat.generate.HardClusters;
 
 /**
  * The Main.

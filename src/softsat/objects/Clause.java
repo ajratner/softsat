@@ -12,11 +12,11 @@ public class Clause {
    * The log weight of the clause.  In each loop of MC-SAT, the clause will be satisfied
    * w.p. 1 - exp(-logWeight)
    */
-  public double logWeight = Double.POSITIVE_INFINITY;
+  private double logWeight = Double.POSITIVE_INFINITY;
 
-  public boolean isHard() {
-    return logWeight == Double.POSITIVE_INFINITY;
-  }
+  public double getLogWeight() { return logWeight; }
+
+  public boolean isHard() { return logWeight == Double.POSITIVE_INFINITY; }
 
   /**
    * The literals comprising the clause.  An ArrayList of Literal objects, each of which
@@ -29,20 +29,33 @@ public class Clause {
    * will use a SAT solver (e.g. SampleSAT) to sample from the satisfying assignments of all
    * active clauses (as hard clauses).
    */
-  public boolean active = false;
+  private boolean active = false;
+
+  public boolean isActive() { return active; }
+
+  /**
+   * Number of satisfied literals.
+   */
+  public int nSat = 0;
+
+  /**
+   * Tests whether the clause is satisfied given the Variable's assignments.
+   */
+  public boolean isSat() {
+    for (Literal literal : literals) {
+      if (literal.isSat()) { return true; }
+    }
+    return false;
+  }
 
   public String toString() {
     StringBuilder s = new StringBuilder();
-    for (Literal l : literals)
-      s.append("  " + l.toString());
-    return "( " + s.toString() + " )  w = " + String.valueOf(weight);
+    for (Literal literal : literals)
+      s.append("  " + literal.toString());
+    return "( " + s.toString() + " )  logWeight = " + String.valueOf(logWeight);
   }
 
-  public Clause(ArrayList<Literal> literals) {
-    this.literals = literals;
-  }
+  public Clause(ArrayList<Literal> literals) { this.literals = literals; }
 
-  public Clause() {
-    this.literals = new ArrayList<Literal>();
-  }
+  public Clause() { this.literals = new ArrayList<Literal>(); }
 }
