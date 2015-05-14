@@ -4,46 +4,45 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
-  * A weighted clause- a disjunction of literals corresponding to Atoms
+  * A weighted clause, which is a disjunction of literals
   */
 public class Clause {
-  public String id = null;
-
-  // Weight of clause- by default is set as a hard clause
-  public double weight = Double.POSITIVE_INFINITY;
-
-  // Get whether this is a 'hard' or 'soft' clause
-  public boolean isHard() {
-    return Math.abs(weight) == Double.POSITIVE_INFINITY;
-  }
-
-  // The list of Atom ids
-  public ArrayList<Atom> atomIds;
-
-  // Whether the literals corresponding to atoms are negated (true) or not (false)
-  public ArrayList<Boolean> negated;
 
   /**
-   * 
+   * The log weight of the clause.  In each loop of MC-SAT, the clause will be satisfied
+   * w.p. 1 - exp(-logWeight)
+   */
+  public double logWeight = Double.POSITIVE_INFINITY;
 
-  // Returns string representation of Clause object
+  public boolean isHard() {
+    return logWeight == Double.POSITIVE_INFINITY;
+  }
+
+  /**
+   * The literals comprising the clause.  An ArrayList of Literal objects, each of which
+   * represents either the negation or not of a single Variable which it references.
+   */
+  public ArrayList<Literal> literals;
+
+  /**
+   * Whether the clause is active.  In the context of MC-SAT for example: each iteration MC-SAT
+   * will use a SAT solver (e.g. SampleSAT) to sample from the satisfying assignments of all
+   * active clauses (as hard clauses).
+   */
+  public boolean active = false;
+
   public String toString() {
-    ArrayList<String> literals = new ArrayList<String>();
-    for (int i = 0; i < atomIds.size(); i++)
-      literals.add( negated.get(i) ? "-" + atomIds.get(i) : atomIds.get(i) );
-    return "( " + String.join("  ", literals) + " )  w=" + String.valueOf(weight);
+    StringBuilder s = new StringBuilder();
+    for (Literal l : literals)
+      s.append("  " + l.toString());
+    return "( " + s.toString() + " )  w = " + String.valueOf(weight);
   }
 
-  // Create a Clause object from list of atom ids and negated bools
-  public Clause(String cid, ArrayList<String> ids, ArrayList<Boolean> negs) {
-    id = cid;
-    atomIds = ids;
-    negated = negs;
+  public Clause(ArrayList<Literal> literals) {
+    this.literals = literals;
   }
 
-  public Clause(String cid) {
-    id = cid;
-    atomIds = new ArrayList<String>();
-    negated = new ArrayList<Boolean>();
+  public Clause() {
+    this.literals = new ArrayList<Literal>();
   }
 }
