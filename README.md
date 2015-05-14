@@ -1,4 +1,7 @@
 ## Usage
+
+Get dependencies with `sh dependencies.sh`.
+
 Build with `ant`.
 
 Then run with `java -jar softsat.jar`.
