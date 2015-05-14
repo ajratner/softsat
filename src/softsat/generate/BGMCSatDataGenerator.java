@@ -13,10 +13,8 @@ import softsat.objects.Clause;
  * 'soft' clauses.  More specifically, generates a set of random k-SAT clauses ('clusters') 
  * over atoms which are also members of soft (weight < inf) inter-cluster clauses
  */
-public class BGMCSatData {
+public class BGMCSatDataGenerator {
 
-  private ArrayList<ArrayList<Clause> > clusters = new ArrayList<ArrayList<Clause> >();
-  private ArrayList<Clause> softClauses = new ArrayList<Clause>();
   private Random rand = new Random();
   
   /**
@@ -47,7 +45,9 @@ public class BGMCSatData {
     return clauses;
   }
 
-  public BGMCSatData(int nClusters, int n, int k, double alpha, int numSoftClauses, int clusterNodesPerSoftClause, double softWeightMean, double softWeightStd) {
+  public ArrayList<ArrayList<Clause> > generateData(int nClusters, int n, int k, double alpha, int numSoftClauses, int clusterNodesPerSoftClause, double softWeightMean, double softWeightStd) {
+
+    ArrayList<ArrayList<Clause> > clusters = new ArrayList<ArrayList<Clause> >();
 
     // Generate the hard k-SAT clusters
     for (int clusterId=0; clusterId < nClusters; clusterId++) {
@@ -70,26 +70,15 @@ public class BGMCSatData {
 	    literals.add(new Literal(new Variable(clusterId1,varIds[litId]),negateds[litId]));
 	    literals.add(new Literal(new Variable(clusterId2,varIds[litId]),negateds[litId]));
 	  }
-	  softClauses.add(new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean));
+	  /* [SERIAL] */
+	  Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
+	  clusters.get(clusterId1).add(softClause);
+	  clusters.get(clusterId2).add(softClause);
 	}
       }
     }
+    return clusters;
   }
 
-  public void printListOfClauses(ArrayList<Clause> clauses) {
-    for (Clause clause : clauses) { System.out.println(clause.toString()); }
-  }
-
-  public void print() {
-    // private ArrayList<ArrayList<Clause> > clusters = new ArrayList<ArrayList<Clause> >();
-    // private ArrayList<Clause> softClauses = new ArrayList<Clause>();
-
-    for (ArrayList<Clause> cluster : clusters) {
-      printListOfClauses(cluster);
-      System.out.println("--");
-    }
-    
-    printListOfClauses(softClauses);
-  }
 
 } 

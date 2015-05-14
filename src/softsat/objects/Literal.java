@@ -1,7 +1,5 @@
 package softsat.objects;
 
-import softsat.objects.Variable;
-
 /**
  * A literal corresponding to either the negation or not of a variable
  */
