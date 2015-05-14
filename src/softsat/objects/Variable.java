@@ -7,7 +7,10 @@ public class Variable {
   private int clusterId;
   private int varId;
 
-  private boolean val = false;
+  private boolean isTrue = false;
+
+  public int getClusterId() { return clusterId; }
+  public boolean getIsTrue() { return isTrue; }
 
   public String toString() {
     return "<" + clusterId + ":" + varId + ">";

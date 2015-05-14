@@ -6,6 +6,8 @@ package softsat.objects;
 public class Literal {
   private Variable var;
   private boolean sign;
+
+  public Variable getVar() { return var; }
   
   public String toString() {
     return (sign ? "-" : "") + var.toString();
