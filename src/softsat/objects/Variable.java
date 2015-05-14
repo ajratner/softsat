@@ -39,13 +39,14 @@ public class Variable {
   public void setMakeBreakCounts() {
     makeCount = 0;
     breakCount = 0;
-    boolean thisSat;
-    int satCount;
     for (Clause clause : clausesIn) {
-      satCount = 0;
+      int satCount = 0;
+      boolean thisSat = false;
       for (Literal literal : clause.getLiterals()) {
-        if (literal.isSat()) { satCount += 1; }
-        if (literal.getVar() == this) { thisSat = literal.isSat(); }
+        if (literal.isSat()) { 
+          satCount += 1;
+          if (literal.getVar() == this) { thisSat = true; } 
+        }
       }
       if (thisSat && satCount == 1) { breakCount += 1; }
       if (!thisSat && satCount == 0) { makeCount += 1; }

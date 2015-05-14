@@ -80,7 +80,7 @@ public class BGMCSatDataGenerator {
     }
 
     // Set the pointers from Variable to Cluster for the set then return
-    DatasetGeneratorUtils.setClausesIn(clusters);
+    DataGeneratorUtils.setClausesIn(clusters);
     return clusters;
   }
 } 

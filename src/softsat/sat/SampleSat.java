@@ -53,15 +53,19 @@ public class SampleSat {
 
   /**
    * Runs SampleSat, assuming all the clauses are 'hard' ie having weight infinity.
-   * @param nSteps
    * @return true iff a satisfying assignment is found 
    */
-  public boolean run(long nSteps) {
+  public boolean run(boolean init, double pSimAnneal, double pWalkSatRandom, long nSteps) {
     init(true);
-    // TODO: for (long step = 0; step < nSteps; step++) {
+    for (long step = 0; step < nSteps; step++) {
+      // TODO
+    }
+    return true;
   }
 
-  // TODO: implement WalkSat as special case of SampleSat
+  public boolean runSample() { return run(true, 0.5, 0.2, 1000); }
+
+  public boolean runSolve() { return run(false, 0.0, 0.2, 1000); }
 
   public SampleSat(int clusterId, ArrayList<Clause> clauses) {
     this.clusterId = clusterId;

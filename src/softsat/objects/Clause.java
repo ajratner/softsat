@@ -37,7 +37,7 @@ public class Clause {
    */
   private boolean active = false;
   public boolean isActive() { return active; }
-  public boolean setActive(boolean active) { this.active = active; }
+  public void setActive(boolean active) { this.active = active; }
 
   /**
    * Tests whether the clause is satisfied given the Variable's assignments.
