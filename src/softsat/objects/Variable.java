@@ -8,10 +8,11 @@ import java.util.HashSet;
  * A boolean variable, which can belong to a specified cluster of variables
  */
 public class Variable {
-  private int clusterId;
-  public int getClusterId() { return clusterId; }
 
-  private int varId;
+  private VariableId varId;
+  public VariableId getVariableId() { return varId; }
+
+  public int getClusterId() { return varId.getClusterId(); }
  
   private boolean isTrue = false;
   public boolean getIsTrue() { return isTrue; }
@@ -63,11 +64,10 @@ public class Variable {
   }
 
   public String toString() {
-    return "<" + clusterId + ":" + varId + ">";
+    return "<" + varId.toString() + ":" + isTrue + ">";
   }
 
   public Variable(int clusterId, int varId) {
-    this.clusterId = clusterId;
-    this.varId = varId;
+    this.varId = new VariableId(clusterId,varId);
   }
 }
