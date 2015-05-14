@@ -34,6 +34,9 @@ public class Clause {
 
   public boolean isActive() { return active; }
 
+  public boolean setActive(boolean active) { this.active = active; }
+
+
   /**
    * Number of satisfied literals.
    */

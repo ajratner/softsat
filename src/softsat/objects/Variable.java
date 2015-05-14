@@ -16,7 +16,7 @@ public class Variable {
 
   public void randomFlip() {
     Random rand = new Random();
-    val = rand.nextBoolean();
+    isTrue = rand.nextBoolean();
   }
 
   public String toString() {
