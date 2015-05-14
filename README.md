@@ -9,8 +9,8 @@ Then run with `java -jar softsat.jar`.
 ## TODO (Ratner)
 1. Global config class / object
 2. SampleSat (+ WalkSat) algorithm
-3. MC-SAT implementation
-4. Block Gibbs + MC-SAT implementation (
+3. Test MC-SAT implementation
+4. Test BCMC-Sat
 5. Variance metrics / experiments & analysis
 
 ## TODO (Selsam)
