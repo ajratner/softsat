@@ -1,24 +1,26 @@
 package softsat.main;
+import java.util.ArrayList;
+
 import softsat.objects.Variable;
 import softsat.objects.Literal;
+import softsat.objects.Clause;
+import softsat.util.PrettyPrinter;
+import softsat.generate.BGMCSatDataGenerator;
 
 /**
  * The Main.
  */
 public class Main {
   
-  private static void demoDan() {
-    Variable var = new Variable(1,2);
-    Literal lit = new Literal(var,true);
-    System.out.println("Lit(Var(1,2),true)");
-    System.out.println(lit);
+  private static void sanityBGMCSatData() {
+    // BGMCSatData(int nClusters, int n, int k, double alpha, int numSoftClauses, int clusterNodesPerSoftClause, double softWeightMean, double softWeightStd) {
+    BGMCSatDataGenerator datagen = new BGMCSatDataGenerator();
+    ArrayList<ArrayList<Clause> > clusters = datagen.generateData(3,4,2,2.0,2,2,10,1);
+    PrettyPrinter pp = new PrettyPrinter();
+    pp.printClusters(clusters);
   }
 
   public static void main(String[] args) {
-    demoDan();
-    
-    //    HardClusters dataset = new HardClusters();
-    //    dataset.generate(3, 3, 3, 4.0, 0.5, 1.0, 0.1, 1);
-    //    dataset.print();
+    sanityBGMCSatData();
   }
 }

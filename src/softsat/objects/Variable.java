@@ -7,12 +7,12 @@ import java.util.Random;
  */
 public class Variable {
   private int clusterId;
-  private int varId;
-
   public int getClusterId() { return clusterId; }
 
-  private boolean val = false;
-  public boolean getValue() { return this.val; }
+  private int varId;
+ 
+  private boolean isTrue = false;
+  public boolean getIsTrue() { return isTrue; }
 
   public void randomFlip() {
     Random rand = new Random();
