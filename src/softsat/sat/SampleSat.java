@@ -3,6 +3,7 @@ package softsat.sat;
 import softsat.objects.Clause;
 import softsat.objects.Literal;
 import softsat.objects.Variable;
+import softsat.main.Config;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +16,8 @@ import java.util.HashSet;
  */
 public class SampleSat {
   Random rand = new Random();
+
+  private Config config;
   
   private ArrayList<Clause> clauses;
   private ArrayList<Variable> vars;
@@ -55,21 +58,22 @@ public class SampleSat {
    * Runs SampleSat, assuming all the clauses are 'hard' ie having weight infinity.
    * @return true iff a satisfying assignment is found 
    */
-  public boolean run(boolean init, double pSimAnneal, double pWalkSatRandom, long nSteps) {
-    init(true);
-    for (long step = 0; step < nSteps; step++) {
+  public boolean run(boolean walkSatMode) {
+    init(config.satResetAssignments);
+    for (long step = 0; step < config.nSampleSatSteps; step++) {
       // TODO
     }
     return true;
   }
 
-  public boolean runSample() { return run(true, 0.5, 0.2, 1000); }
+  public boolean runSolve() { return run(true); }
 
-  public boolean runSolve() { return run(false, 0.0, 0.2, 1000); }
+  public boolean runSample() { return run(false); }
 
-  public SampleSat(int clusterId, ArrayList<Clause> clauses) {
+  public SampleSat(int clusterId, ArrayList<Clause> clauses, Config config) {
     this.clusterId = clusterId;
     this.clauses = clauses;
+    this.config = config;
     HashSet<Variable> uniqueVars = new HashSet<Variable>();
     for (Clause clause : clauses) {
       for (Variable var : clause.getVars()) { uniqueVars.add(var); }
