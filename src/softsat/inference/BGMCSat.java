@@ -7,9 +7,7 @@ import softsat.objects.Clause;
 
 
 public class BGMCSat {
-  private int numSweeps = 0;
   private int numSamples = 0;
-  private int collectSampleFrequency = 1;
 
   private ArrayList<ArrayList<Integer> > sampleCounts;
   private ArrayList<ArrayList<Clause> > clusters;
@@ -19,10 +17,7 @@ public class BGMCSat {
       MCSat mcsat = new MCSat(clusterId,clusters.get(clusterId));
       mcsat.sample(); // [TODO] num iters?
     }
-    numSweeps++;
   }
-
-  //    if (numSweeps % collectSampleFrequency == 0) { collectSample(); }
 
   private void collectSample() {
     for (int clusterId = 0; clusterId < clusters.size(); clusterId++) {
@@ -37,10 +32,15 @@ public class BGMCSat {
 	}
       }
     }
+    numSamples++;
   }
 
-
-
+  public void run(int numSweeps,int collectSampleFrequency) {
+    for (int sweep = 0; sweep < numSweeps; sweep++) {
+      sweep();
+      if (sweep % collectSampleFrequency == 0) { collectSample(); }
+    }
+  }
 
   public BGMCSat(ArrayList<ArrayList<Clause> > clusters) { this.clusters = clusters; }
 
