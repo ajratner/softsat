@@ -36,19 +36,23 @@ public class SampleSat {
   }
 
   /**
-   * Syncs the stuff...
+   * 
+   * TODO: we can make this incremental eg the outer MC-SAT loop can keep the make / break
+   * counts up to date so that we don't need to re-do completely each time
    */
-  //private void sync() {
+  //private void generateMakeBreakCounts() {
 
   /**
    * Runs SampleSat, assuming all the clauses are 'hard' ie having weight infinity.
    * @param nSteps
    * @return true iff a satisfying assignment is found 
    */
-  //public boolean run(long nSteps) {
-  //  unsatisfied = new HashSet<Clause>();
-  //  for (long step = 0; step < nSteps; step++) {
-  //}
+  public boolean run(long nSteps) {
+    unsatisfied = new HashSet<Clause>();
+    //for (long step = 0; step < nSteps; step++) {
+  }
+
+  // TODO: implement WalkSat as special case of SampleSat
 
   public SampleSat(int clusterId, ArrayList<Clause> clauses) {
     this.clusterId = clusterId;

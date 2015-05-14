@@ -1,6 +1,7 @@
 package softsat.objects;
 
 import java.util.Random;
+import java.util.HashSet;
 
 /**
  * A boolean variable, which can belong to a specified cluster of variables
@@ -13,6 +14,13 @@ public class Variable {
  
   private boolean isTrue = false;
   public boolean getIsTrue() { return isTrue; }
+
+  /**
+   * A fixed list of the clauses that this Variable is in, eg agnostic to active/inactive status
+   */ 
+  private ArrayList<Clause> clausesIn;
+  public ArrayList<Clause> getClausesIn() { return clausesIn; }
+  public void setClausesIn(ArrayList<Clause> clausesIn) { this.clausesIn = clausesIn; }
 
   public void randomFlip() {
     Random rand = new Random();
