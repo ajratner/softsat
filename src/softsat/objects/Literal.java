@@ -9,7 +9,7 @@ public class Literal {
 
   private boolean negated;
 
-  public boolean isSat() { return var.getValue() != negated; }
+  public boolean isSat() { return var.getIsTrue() != negated; }
   
   public String toString() { return (negated ? "-" : "") + var.toString(); }
 

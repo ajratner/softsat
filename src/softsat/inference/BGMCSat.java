@@ -15,7 +15,7 @@ public class BGMCSat {
   private void sweep() {
     for (int clusterId = 0; clusterId < clusters.size(); clusterId++) {
       MCSat mcsat = new MCSat(clusterId,clusters.get(clusterId));
-      mcsat.sample(); // [TODO] num iters?
+      mcsat.sample(0); // [TODO] take numIters
     }
   }
 
