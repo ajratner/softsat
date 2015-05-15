@@ -7,6 +7,7 @@ import java.util.Random;
 import softsat.objects.Variable;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
+import softsat.objects.SoftClause;
 
 /**
  * Generate a dataset which is roughly a set of clusters of 'hard' clauses connected by 
@@ -45,9 +46,10 @@ public class BGMCSatDataGenerator {
     return clauses;
   }
 
-  public ArrayList<ArrayList<Clause> > generateData(int nClusters, int n, int k, double alpha, int numSoftClauses, int clusterNodesPerSoftClause, double softWeightMean, double softWeightStd) {
+  public Data generateData(int nClusters, int n, int k, double alpha, int numSoftClauses, int clusterNodesPerSoftClause, double softWeightMean, double softWeightStd) {
 
     ArrayList<ArrayList<Clause> > clusters = new ArrayList<ArrayList<Clause> >();
+    ArrayList<SoftClause> softClauses = new ArrayList<SoftClause>();
 
     // Generate the hard k-SAT clusters
     for (int clusterId=0; clusterId < nClusters; clusterId++) {
@@ -73,14 +75,16 @@ public class BGMCSatDataGenerator {
           }
           /* [SERIAL] */
           Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
-          clusters.get(clusterId1).add(softClause);
-          clusters.get(clusterId2).add(softClause);
+	  softClauses.add(new SoftClause(softClause,clusterId1,clusterId2));
+	  //          clusters.get(clusterId1).add(softClause); [TODO] put elsewhere
+	  //          clusters.get(clusterId2).add(softClause);
         }
       }
     }
 
     // Set the pointers from Variable to Cluster for the set then return
+    // [TODO] this needs to be after we add the soft clauses to the clusters
     DataGeneratorUtils.setClausesIn(clusters);
-    return clusters;
+    return new Data(clusters,softClauses);
   }
 } 

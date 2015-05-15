@@ -1,0 +1,23 @@
+package softsat.inference;
+
+import java.util.ArrayList;
+import softsat.objects.Literal;
+import softsat.objects.Clause;
+import softsat.objects.SoftClause;
+import softsat.generate.Data;
+
+public class VanillaMCSat extends SampleCollector {
+
+  @Override
+  protected void sweep() {
+  }
+
+  public VanillaMCSat(Data data) {
+    ArrayList<Clause> singletonCluster = new ArrayList<Clause>();
+    for (ArrayList<Clause> cluster : data.clusters) { singletonCluster.addAll(cluster); }
+    for (SoftClause softClause : data.softClauses) { singletonCluster.add(softClause.clause); }
+    ArrayList<ArrayList<Clause> > degenerateClusters = new ArrayList<ArrayList<Clause> >();
+    clusters.add(singletonCluster);
+  }
+
+}
