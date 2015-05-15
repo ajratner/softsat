@@ -8,6 +8,7 @@ Then run with `java -jar softsat.jar`.
 Note: pass `-ea` to have asserts work.
 
 ## TODO (Ratner)
+* allVariablesActive (MCSat passes it to SampleSat constructor, somewhere check for activeVar)
 * SampleSat (+ WalkSat) algorithm
 * Make SetClausesIn a member of Data, and make sure to include the softclauses.
 * Test MCSat implementation
@@ -15,8 +16,10 @@ Note: pass `-ea` to have asserts work.
 * Test VanillaMCSat
 * Variance metrics / experiments & analysis
 
+
 ## TODO (Selsam)
 * Write a few sanity checks
+* 
 
 ### TODO (lower priority)
 * Incremental maintenance of makeBreak counts / other bookeeping within MC-SAT ie between calls to inner SAT solver
