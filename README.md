@@ -8,11 +8,7 @@ Then run with `java -jar softsat.jar`.
 Note: pass `-ea` to have asserts work.
 
 ## TODO (Ratner)
-* make data generator take config file
-* default config file
 * allVariablesActive (MCSat passes it to SampleSat constructor, somewhere check for activeVar)
-* Make SetClausesIn a member of Data, and make sure to include the softclauses.
-* Test WalkSat
 * Test SampleSat
 * Test MCSat implementation
 * Test BCMCSat
@@ -21,6 +17,7 @@ Note: pass `-ea` to have asserts work.
 
 
 ## TODO (Selsam)
+* Make SetClausesIn a member of Data, and make sure to include the softclauses [what's going on here?  are you working on this?]
 * Write independent test for varToClause arrays (in progress)
 
 ### TODO (lower priority)
