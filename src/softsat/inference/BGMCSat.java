@@ -5,7 +5,7 @@ import softsat.objects.Literal;
 import softsat.objects.Clause;
 import softsat.objects.SoftClause;
 import softsat.generate.Data;
-import softsat.main.Config;
+import softsat.config.Config;
 
 public class BGMCSat extends SampleCollector {
 

@@ -3,7 +3,7 @@ package softsat.inference;
 import java.util.ArrayList;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
-import softsat.main.Config;
+import softsat.config.Config;
 
 public abstract class SampleCollector {
   protected Config config;

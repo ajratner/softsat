@@ -6,7 +6,7 @@ import java.util.Random;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
 import softsat.sat.SampleSat;
-import softsat.main.Config;
+import softsat.config.Config;
 
 
 public class MCSat {

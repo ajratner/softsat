@@ -10,7 +10,7 @@ import softsat.objects.VariableId;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
 import softsat.objects.SoftClause;
-
+import softsat.config.Config;
 import softsat.util.Pair;
 
 /**
@@ -61,8 +61,7 @@ public class BGMCSatDataGenerator {
     return clauses;
   }
 
-  public Data generateData(int nClusters, int n, int k, double alpha, int numSoftClauses, int clusterNodesPerSoftClause, double softWeightMean, double softWeightStd) {
-
+  public Data generateData() {
     varMap = new HashMap<VariableId,Variable>();
 
     ArrayList<ArrayList<Clause> > clusters = new ArrayList<ArrayList<Clause> >();
@@ -110,5 +109,25 @@ public class BGMCSatDataGenerator {
     // [TODO URGENT] this needs to take the soft clauses too!
     DataGeneratorUtils.setClausesIn(clusters);
     return new Data(clusters,softClauses);
+  }
+
+  private int nClusters;
+  private int n;
+  private int k;
+  private double alpha;
+  private int numSoftClauses;
+  private int clusterNodesPerSoftClause;
+  private double softWeightMean;
+  private double softWeightStd;
+
+  public BGMCSatDataGenerator(Config config) {
+    this.nClusters = config.nClusters;
+    this.n = config.n;
+    this.k = config.k;
+    this.alpha = config.alpha;
+    this.numSoftClauses = config.numSoftClauses;
+    this.clusterNodesPerSoftClause = config.clusterNodesPerSoftClause;
+    this.softWeightMean = config.softWeightMean;
+    this.softWeightStd = config.softWeightStd;
   }
 } 

@@ -3,7 +3,7 @@ package softsat.sat;
 import softsat.objects.Clause;
 import softsat.objects.Literal;
 import softsat.objects.Variable;
-import softsat.main.Config;
+import softsat.config.Config;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -63,6 +63,9 @@ public class SampleSat {
     init(config.satResetAssignments);
     for (long step = 0; step < config.nSampleSatSteps; step++) {
 
+      // WalkSat terminates here
+      if (walkSatMode && unsatisfied.isEmpty()) { return true; }
+
       // SA step: pick a random variable to flip and accept wp e^(-deltaCost)
       if (rand.nextDouble() < config.pSimAnnealStep) {
         Variable var = vars.get(rand.nextInt(vars.size()));
@@ -79,9 +82,6 @@ public class SampleSat {
           flipAndUpdate(clause.getMinBreakVar());
         }
       }
-
-      // WalkSat terminates here
-      if (walkSatMode && unsatisfied.isEmpty()) { return true; }
     }
     return unsatisfied.isEmpty();
   }
