@@ -16,6 +16,7 @@ public class Variable {
  
   private boolean isTrue = false;
   public boolean getIsTrue() { return isTrue; }
+  public void flipIsTrue() { isTrue = !isTrue; }
 
   /**
    * A fixed list of the clauses that this Variable is in, eg agnostic to active/inactive status
@@ -30,17 +31,28 @@ public class Variable {
    */
   private int makeCount;
   private int breakCount;
+  public void incBreakCount() { breakCount += 1; }
+  public void decBreakCount() { breakCount -= 1; }
+  public void incMakeCount() { makeCount += 1; }
+  public void decMakeCount() { makeCount -= 1; }
+  public void resetCounts() {
+    makeCount = 0;
+    breakCount = 0;
+  }
   public int getBreakCount() { return breakCount; }
-  public int getDelta() { return makeCount - breakCount; }
+  public int getCost() { return makeCount - breakCount; }
 
   /**
-   * Set the initial make / break counts.  This will not change any other variables'
-   * make/break counts
+   * Set the initial make / break counts.  This will *not* change the make / break counts of any
+   * other vars
+   * TODO: move this to SampleSat / integrate w function there?
    */
-  public void setMakeBreakCounts() {
+  private void setMakeBreakCounts() {
     makeCount = 0;
     breakCount = 0;
     for (Clause clause : clausesIn) {
+      
+      // Find out if this var is sat in this clause & get the total sat count
       int satCount = 0;
       boolean thisSat = false;
       for (Literal literal : clause.getLiterals()) {
@@ -49,14 +61,12 @@ public class Variable {
           if (literal.getVar() == this) { thisSat = true; } 
         }
       }
+
+      // Update this var's counts
       if (thisSat && satCount == 1) { breakCount += 1; }
       if (!thisSat && satCount == 0) { makeCount += 1; }
     }
   }
-
-  // TODO: update make break counts
-
-  // TODO: flip + update?
 
   public void randomFlip() {
     Random rand = new Random();

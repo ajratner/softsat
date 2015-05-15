@@ -2,11 +2,13 @@ package softsat.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
   * A weighted clause, which is a disjunction of literals
   */
 public class Clause {
+  Random rand = new Random();
 
   /**
    * The log weight of the clause.  In each loop of MC-SAT, the clause will be satisfied
@@ -27,6 +29,24 @@ public class Clause {
     ArrayList<Variable> vars = new ArrayList<Variable>();
     for (Literal literal : literals) { vars.add(literal.getVar()); }
     return vars;
+  }
+
+  /**
+   * Return the variable with the lowest break count in this clause
+   */
+  public Variable getMinBreakVar() {
+    int minBreakCount = Integer.MAX_VALUE;
+    Variable var = literals.get(0).getVar();
+    for (Literal literal : literals) {
+      Variable newVar = literal.getVar();
+      if (newVar.getBreakCount() < minBreakCount) {
+        minBreakCount = newVar.getBreakCount();
+        var = newVar;
+      } else if (newVar.getBreakCount() == minBreakCount && rand.nextBoolean()) {
+        var = newVar;
+      }
+    }
+    return var;
   }
 
   /**

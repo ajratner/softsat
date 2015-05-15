@@ -7,6 +7,7 @@ import softsat.main.Config;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
+import softsat.util.HashArray;
 
 /**
  * SampleSat attempts to sample uniformly from the space of satifying assignments for a given
@@ -22,7 +23,7 @@ public class SampleSat {
   private ArrayList<Clause> clauses;
   private ArrayList<Variable> vars;
 
-  private HashSet<Clause> unsatisfied;
+  private HashArray<Clause> unsatisfied;
 
   /**
    * The clusterId of the cluster we are currently in, which lets us filter out Variables
@@ -48,7 +49,7 @@ public class SampleSat {
     for (Variable var : vars) { var.setMakeBreakCounts(); }
 
     // Populate the HashSet of unsat clauses
-    unsatisfied = new HashSet<Clause>();
+    unsatisfied = new HashArray<Clause>();
     for (Clause clause : clauses) {
       if (!clause.isSat()) { unsatisfied.add(clause); }
     }
@@ -60,17 +61,83 @@ public class SampleSat {
    */
   public boolean run(boolean walkSatMode) {
     init(config.satResetAssignments);
+    Variable var;
     for (long step = 0; step < config.nSampleSatSteps; step++) {
-      // TODO
+
+      // SA step: pick a random variable to flip and accept wp e^(-deltaCost)
+      if (rand.nextDouble() < config.pSimAnnealStep) {
+        Variable var = vars.get(rand.nextInt(vars.size()));
+        if (rand.nextDouble() < Math.exp(-var.getCost() / config.simAnnealTemp)) { 
+          flipAndUpdate(var);
+        }
+      
+      // WS step: pick a random unsat clause- pick var to flip randomly or by breakCount
+      } else {
+        Clause clause = unsatisfied.getRandomElement();
+        if (rand.nextDouble() < config.pRandomStep) {
+          flipAndUpdate(clause.getVars().get(rand.nextInt(clause.getVars().size())));
+        } else {
+          flipAndUpdate(clause.getMinBreakVar());
+        }
+      }
+
+      // WalkSat terminates here
+      if (walkSatMode && unsatisfied.size() == 0) { return true; }
     }
-    return true;
   }
+
+  private flipAndUpdate(Variable var) {
+    var.flipIsTrue()
+    var.resetCounts()
+    for (Clause clause : var.getClausesIn()) {
+
+      // Find out if the input var is sat in the clause, get total sat count
+      int satCount = 0;
+      boolean thisSat = false;
+      for (Literal literal : clause.getLiterals()) {
+        if (literal.isSat()) {
+          satCount += 1;
+          if (literal.getVar() == var) { thisSat = true; }
+        }
+      }
+
+      // update the unsat list if necessary
+      boolean inUnsat = unsatisfied.contains(clause);
+      if (inUnsat && satCount > 0) {
+        unsatisfied.remove(clause);
+      } else if (!inUnsat && satCount == 0) {
+        unsatisfied.add(clause);
+      }
+
+      // update this var's counts
+      if (thisSat && satCount == 1) {
+        var.incBreakCount();
+      } else if (!thisSat && satCount == 0) {
+        var.incMakeCount();
+      }
+
+      // Update neighboring vars' counts
+      for (Literal neighbor : clause.getLiterals()) {
+        if (neighbor.getVar() == var) { continue; }
+        if (thisSat && neighbor.isSat() && satCount == 2) {
+          neighbor.getVar().decBreakCount();
+        } else if (thisSat && !neighbor.isSat() && satCount == 1) {
+          neighbor.getVar().decMakeCount();
+        } else if (!thisSat && neighbor.isSat() && satCount == 1) {
+          neighbor.getVar().incBreakCount();
+        } else if (!thisSat && !neighbor.isSat() && satCount == 0) {
+          neighbor.getVar().incMakeCount();
+        }
+      }
+    }
+  }
+
 
   public boolean runSolve() { return run(true); }
 
   public boolean runSample() { return run(false); }
 
-  public SampleSat(int clusterId, ArrayList<Clause> clauses, Config config) {
+  public SampleSat(int clusterId, boolean allVarsActive, ArrayList<Clause> clauses, Config config) {
     this.clusterId = clusterId;
     this.clauses = clauses;
     this.config = config;

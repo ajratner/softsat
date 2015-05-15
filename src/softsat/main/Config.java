@@ -18,6 +18,11 @@ public class Config {
   public double pSimAnnealStep;
 
   /**
+   * The temperature parameter for the SA step
+   */
+  public double simAnnealTemp;
+
+  /**
    * The probability of taking a random step in WalkSat
    */
   public double pRandomStep;
