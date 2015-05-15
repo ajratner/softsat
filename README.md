@@ -5,7 +5,7 @@ Get dependencies with `sh dependencies.sh`.
 Build with `ant`.
 
 Then run with `java -jar softsat.jar`.
-Note: pass `-ea` to have asserts work
+Note: pass `-ea` to have asserts work.
 
 ## TODO (Ratner)
 * SampleSat (+ WalkSat) algorithm
