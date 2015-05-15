@@ -14,7 +14,7 @@ Then run with `java -jar softsat.jar`.
 5. Variance metrics / experiments & analysis
 
 ## TODO (Selsam)
-1. Implement the `sweep` method for VanillaMCSat.
+1. 
 
 ### TODO (lower priority)
 1. Incremental maintenance of makeBreak counts / other bookeeping within MC-SAT ie between calls to inner SAT solver
