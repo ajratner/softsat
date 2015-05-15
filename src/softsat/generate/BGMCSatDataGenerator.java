@@ -81,7 +81,7 @@ public class BGMCSatDataGenerator {
     }
 
     // Set the pointers from Variable to Cluster for the set then return
-    // [TODO URGENT] this needs to be after we add the soft clauses to the clusters
+    // [TODO URGENT] this needs to take the soft clauses too!
     DataGeneratorUtils.setClausesIn(clusters);
     return new Data(clusters,softClauses);
   }
