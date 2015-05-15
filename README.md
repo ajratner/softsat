@@ -19,7 +19,7 @@ Note: pass `-ea` to have asserts work.
 
 ## TODO (Selsam)
 * Write a few sanity checks
-* 
+* Write independent test for varToClause arrays (in progress)
 
 ### TODO (lower priority)
 * Incremental maintenance of makeBreak counts / other bookeeping within MC-SAT ie between calls to inner SAT solver
