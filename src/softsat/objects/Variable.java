@@ -67,7 +67,7 @@ public class Variable {
     return "<" + varId.toString() + ":" + isTrue + ">";
   }
 
-  public Variable(int clusterId, int varId) {
-    this.varId = new VariableId(clusterId,varId);
+  public Variable(VariableId varId) {
+    this.varId = varId;
   }
 }
