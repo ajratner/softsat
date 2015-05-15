@@ -10,6 +10,7 @@ Note: pass `-ea` to have asserts work.
 ## TODO (Ratner)
 * allVariablesActive (MCSat passes it to SampleSat constructor, somewhere check for activeVar)
 * Test SampleSat
+* Test WalkSat/SampleSat *specifically to make sure breakCount heuristic working! (Could be passing w/out this...)*
 * Test MCSat implementation
 * Test BCMCSat
 * Test VanillaMCSat
