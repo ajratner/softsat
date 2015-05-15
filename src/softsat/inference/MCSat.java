@@ -19,12 +19,16 @@ public class MCSat {
 
   private Random rand = new Random();
 
-  public MCSat(int clusterId,ArrayList<Clause> clauses, Config config) {
+  private boolean allClustersActive;
+
+  public MCSat(int clusterId,boolean allClustersActive, ArrayList<Clause> clauses, Config config) {
     this.clusterId = clusterId;
+    this.allClustersActive = allClustersActive;
     this.clauses = clauses;
     this.config = config;
   }
 
+  // [TODO] have this as part of the config
   public void sample(int numIterations) {
 
     // Activate hard clauses
