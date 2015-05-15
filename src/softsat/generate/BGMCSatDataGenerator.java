@@ -76,14 +76,12 @@ public class BGMCSatDataGenerator {
           /* [SERIAL] */
           Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
 	  softClauses.add(new SoftClause(softClause,clusterId1,clusterId2));
-	  //          clusters.get(clusterId1).add(softClause); [TODO] put elsewhere
-	  //          clusters.get(clusterId2).add(softClause);
         }
       }
     }
 
     // Set the pointers from Variable to Cluster for the set then return
-    // [TODO] this needs to be after we add the soft clauses to the clusters
+    // [TODO URGENT] this needs to be after we add the soft clauses to the clusters
     DataGeneratorUtils.setClausesIn(clusters);
     return new Data(clusters,softClauses);
   }

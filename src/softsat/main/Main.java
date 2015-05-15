@@ -9,6 +9,7 @@ import softsat.generate.BGMCSatDataGenerator;
 import softsat.generate.Data;
 import softsat.objects.SoftClause;
 import softsat.inference.BGMCSat;
+import softsat.inference.VanillaMCSat;
 
 /**
  * The Main.
@@ -20,8 +21,15 @@ public class Main {
     BGMCSatDataGenerator datagen = new BGMCSatDataGenerator();
     Data data = datagen.generateData(3,4,2,2.0,2,2,10,1);
     PrettyPrinter pp = new PrettyPrinter();
-    BGMCSat bgmcsat = new BGMCSat(data);
+    Config config = new Config();
+    System.out.println("--BGMCSat--");
+    BGMCSat bgmcsat = new BGMCSat(data,config);
     pp.printClusters(bgmcsat.getClusters());
+
+    System.out.println("--Vanilla--");
+    VanillaMCSat vmcsat = new VanillaMCSat(data,config);
+    pp.printClusters(vmcsat.getClusters());
+
   }
 
   public static void main(String[] args) {

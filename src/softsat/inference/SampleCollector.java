@@ -3,9 +3,10 @@ package softsat.inference;
 import java.util.ArrayList;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
+import softsat.main.Config;
 
-
-public class SampleCollector {
+public abstract class SampleCollector {
+  protected Config config;
   private int numSamples = 0;
 
   private ArrayList<ArrayList<Integer> > sampleCounts = new ArrayList<ArrayList<Integer> >();
@@ -38,6 +39,6 @@ public class SampleCollector {
     }
   }
 
-
+  public SampleCollector(Config config) { this.config = config; }
 
 }
