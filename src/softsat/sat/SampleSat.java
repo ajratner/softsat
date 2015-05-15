@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
 import softsat.util.HashArray;
+import java.util.Collections;
 
 /**
  * SampleSat attempts to sample uniformly from the space of satifying assignments for a given
@@ -17,12 +18,9 @@ import softsat.util.HashArray;
  */
 public class SampleSat {
   Random rand = new Random();
-
   private Config config;
-  
   private ArrayList<Clause> clauses;
-  private ArrayList<Variable> vars;
-
+  private ArrayList<Variable> activeVars;
   private HashArray<Clause> unsatisfied;
 
   /**
@@ -30,6 +28,10 @@ public class SampleSat {
    * in other clusters (which we might want to consider as frozen)
    */
   private int clusterId;
+
+  private boolean isActive(Variable var) { 
+    return (var.getClusterId() == clusterId) || config.allVarsActive;
+  }
 
   /**
    * Initializes the primary counts / data structures for SampleSat.  Optionally resets the
@@ -39,14 +41,14 @@ public class SampleSat {
   private void init(boolean resetAssignments) {
     
     // Optionally randomly reset the assignments of the active (ie in-cluster) vars
-    if (resetAssignments) {
-      for (Variable var : vars) {
-        if (var.getClusterId() == clusterId) { var.randomFlip(); }
-      }
+    for (Variable var : activeVars) { 
+      if (resetAssignments) { var.randomFlip(); }
     }
 
     // Set the make/break counts in the vars
-    for (Variable var : vars) { var.setMakeBreakCounts(); }
+    for (Variable var : activeVars) {
+      var.setMakeBreakCounts();
+    }
 
     // Populate the HashSet of unsat clauses
     unsatisfied = new HashArray<Clause>();
@@ -68,7 +70,7 @@ public class SampleSat {
 
       // SA step: pick a random variable to flip and accept wp e^(-deltaCost)
       if (rand.nextDouble() < config.pSimAnnealStep) {
-        Variable var = vars.get(rand.nextInt(vars.size()));
+        Variable var = activeVars.get(rand.nextInt(activeVars.size()));
         if (rand.nextDouble() < Math.exp(-var.getCost() / config.simAnnealTemp)) { 
           flipAndUpdate(var);
         }
@@ -76,10 +78,29 @@ public class SampleSat {
       // WS step: pick a random unsat clause- pick var to flip randomly or by breakCount
       } else {
         Clause clause = unsatisfied.getRandomElement();
+        ArrayList<Variable> clauseVars = clause.getVars();
+        Collections.shuffle(clauseVars);
+        
+        // pick randomly from active vars
         if (rand.nextDouble() < config.pRandomStep) {
-          flipAndUpdate(clause.getVars().get(rand.nextInt(clause.getVars().size())));
+          for (Variable var : clauseVars) {
+            if (isActive(var)) { 
+              flipAndUpdate(var);
+              break;
+            }
+          }
+
+        // pick according to break count heuristic
         } else {
-          flipAndUpdate(clause.getMinBreakVar());
+          int minBreakCount = Integer.MAX_VALUE;
+          Variable minBreakVar = clauseVars.get(0);
+          for (Variable var : clauseVars) {
+            if (isActive(var) && (var.getBreakCount() < minBreakCount)) {
+              minBreakCount = var.getBreakCount();
+              minBreakVar = var;
+            }
+          }
+          flipAndUpdate(minBreakVar);
         }
       }
     }
@@ -132,7 +153,6 @@ public class SampleSat {
     }
   }
 
-
   public boolean runSolve() { return run(true); }
 
   public boolean runSample() { return run(false); }
@@ -141,10 +161,14 @@ public class SampleSat {
     this.clusterId = clusterId;
     this.clauses = clauses;
     this.config = config;
-    HashSet<Variable> uniqueVars = new HashSet<Variable>();
+
+    // Get the list of *unique* *active* vars in the given clauses
+    HashSet<Variable> vars = new HashSet<Variable>();
     for (Clause clause : clauses) {
-      for (Variable var : clause.getVars()) { uniqueVars.add(var); }
+      for (Variable var : clause.getVars()) { 
+        if (isActive(var)) { vars.add(var); }
+      }
     }
-    this.vars = new ArrayList<Variable>(uniqueVars);
+    this.activeVars = new ArrayList<Variable>(vars);
   }
 }

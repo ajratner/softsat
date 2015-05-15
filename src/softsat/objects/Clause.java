@@ -32,24 +32,6 @@ public class Clause {
   }
 
   /**
-   * Return the variable with the lowest break count in this clause
-   */
-  public Variable getMinBreakVar() {
-    int minBreakCount = Integer.MAX_VALUE;
-    Variable var = literals.get(0).getVar();
-    for (Literal literal : literals) {
-      Variable newVar = literal.getVar();
-      if (newVar.getBreakCount() < minBreakCount) {
-        minBreakCount = newVar.getBreakCount();
-        var = newVar;
-      } else if (newVar.getBreakCount() == minBreakCount && rand.nextBoolean()) {
-        var = newVar;
-      }
-    }
-    return var;
-  }
-
-  /**
    * Whether the clause is active.  In the context of MC-SAT for example: each iteration MC-SAT
    * will use a SAT solver (e.g. SampleSAT) to sample from the satisfying assignments of all
    * active clauses (as hard clauses).

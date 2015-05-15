@@ -14,11 +14,15 @@ public class BruteForceSat {
   private Config config;
   private int clusterId;
   private ArrayList<Clause> clauses;
-  private ArrayList<Variable> vars;
+  private ArrayList<Variable> activeVars;
+
+  private boolean isActive(Variable var) {
+    return (var.getClusterId() == clusterId) || config.allVarsActive;
+  }
 
   private void init() {
-    for (Variable var : vars) {
-      if (var.getClusterId() == clusterId) { var.randomFlip(); }
+    for (Variable var : activeVars) {
+      if (isActive(var)) { var.randomFlip(); }
     }
   }
 
@@ -30,9 +34,9 @@ public class BruteForceSat {
   }
 
   private boolean explore(int varId) {
-    if (varId < vars.size()) {
+    if (varId < activeVars.size()) {
       if (explore(varId + 1)) { return true; }
-      vars.get(varId).flipIsTrue();
+      activeVars.get(varId).flipIsTrue();
       if (explore(varId + 1)) { return true; }
       return false;
     } else {
@@ -49,10 +53,14 @@ public class BruteForceSat {
     this.clusterId = clusterId;
     this.clauses = clauses;
     this.config = config;
-    HashSet<Variable> uniqueVars = new HashSet<Variable>();
+
+    // Get the list of *unique* *active* vars in the given clauses
+    HashSet<Variable> vars = new HashSet<Variable>();
     for (Clause clause : clauses) {
-      for (Variable var : clause.getVars()) { uniqueVars.add(var); }
+      for (Variable var : clause.getVars()) { 
+        if (isActive(var)) { vars.add(var); }
+      }
     }
-    this.vars = new ArrayList<Variable>(uniqueVars);
+    this.activeVars = new ArrayList<Variable>(vars);
   }
 }
