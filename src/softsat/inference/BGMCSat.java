@@ -13,7 +13,7 @@ public class BGMCSat extends SampleCollector {
   @Override
   protected void sweep() {
     for (int clusterId = 0; clusterId < clusters.size(); clusterId++) {
-      MCSat mcsat = new MCSat(clusterId,clusters.get(clusterId),config);
+      MCSat mcsat = new MCSat(clusterId,false,clusters.get(clusterId),config);
       mcsat.sample(0);
     }
   }

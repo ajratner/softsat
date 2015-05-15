@@ -11,6 +11,8 @@ public class VanillaMCSat extends SampleCollector {
 
   @Override
   protected void sweep() {
+    MCSat mcsat = new MCSat(0,true,clusters.get(0),config);
+    mcsat.sample(0);
   }
 
   public VanillaMCSat(Data data,Config config) {
