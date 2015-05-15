@@ -7,15 +7,16 @@ Build with `ant`.
 Then run with `java -jar softsat.jar`.
 
 ## TODO (Ratner)
-1. Global config class / object
-2. SampleSat (+ WalkSat) algorithm
-3. Test MC-SAT implementation
-4. Test BCMC-Sat
-5. Variance metrics / experiments & analysis
+* SampleSat (+ WalkSat) algorithm
+* Make SetClausesIn a member of Data, and make sure to include the softclauses.
+* Test MCSat implementation
+* Test BCMCSat
+* Test VanillaMCSat
+* Variance metrics / experiments & analysis
 
 ## TODO (Selsam)
-1. 
+* Write a few sanity checks
 
 ### TODO (lower priority)
-1. Incremental maintenance of makeBreak counts / other bookeeping within MC-SAT ie between calls to inner SAT solver
-2. Asynchronous / parallel execution!
+* Incremental maintenance of makeBreak counts / other bookeeping within MC-SAT ie between calls to inner SAT solver
+* Asynchronous / parallel execution!
