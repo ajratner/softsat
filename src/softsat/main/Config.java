@@ -32,4 +32,9 @@ public class Config {
    */
   public long nSampleSatSteps;
 
+  /**
+   * Whether all the clusters should be active.  E.g. for 'vanilla' MC-SAT.
+   */
+  public boolean allVarsActive;
+
 }

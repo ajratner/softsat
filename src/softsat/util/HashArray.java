@@ -1,4 +1,4 @@
-package tuffy.util;
+package softsat.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

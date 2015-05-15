@@ -61,7 +61,6 @@ public class SampleSat {
    */
   public boolean run(boolean walkSatMode) {
     init(config.satResetAssignments);
-    Variable var;
     for (long step = 0; step < config.nSampleSatSteps; step++) {
 
       // SA step: pick a random variable to flip and accept wp e^(-deltaCost)
@@ -82,13 +81,14 @@ public class SampleSat {
       }
 
       // WalkSat terminates here
-      if (walkSatMode && unsatisfied.size() == 0) { return true; }
+      if (walkSatMode && unsatisfied.isEmpty()) { return true; }
     }
+    return unsatisfied.isEmpty();
   }
 
-  private flipAndUpdate(Variable var) {
-    var.flipIsTrue()
-    var.resetCounts()
+  private void flipAndUpdate(Variable var) {
+    var.flipIsTrue();
+    var.resetCounts();
     for (Clause clause : var.getClausesIn()) {
 
       // Find out if the input var is sat in the clause, get total sat count
@@ -104,7 +104,7 @@ public class SampleSat {
       // update the unsat list if necessary
       boolean inUnsat = unsatisfied.contains(clause);
       if (inUnsat && satCount > 0) {
-        unsatisfied.remove(clause);
+        unsatisfied.removeObj(clause);
       } else if (!inUnsat && satCount == 0) {
         unsatisfied.add(clause);
       }
@@ -137,7 +137,7 @@ public class SampleSat {
 
   public boolean runSample() { return run(false); }
 
-  public SampleSat(int clusterId, boolean allVarsActive, ArrayList<Clause> clauses, Config config) {
+  public SampleSat(int clusterId, ArrayList<Clause> clauses, Config config) {
     this.clusterId = clusterId;
     this.clauses = clauses;
     this.config = config;

@@ -47,7 +47,7 @@ public class Variable {
    * other vars
    * TODO: move this to SampleSat / integrate w function there?
    */
-  private void setMakeBreakCounts() {
+  public void setMakeBreakCounts() {
     makeCount = 0;
     breakCount = 0;
     for (Clause clause : clausesIn) {
