@@ -21,9 +21,7 @@ public class BruteForceSat {
   }
 
   private void init() {
-    for (Variable var : activeVars) {
-      if (isActive(var)) { var.randomFlip(); }
-    }
+    for (Variable var : activeVars) { var.randomFlip(); }
   }
 
   private boolean checkSat() {

@@ -122,6 +122,8 @@ public class SampleSat {
         }
       }
 
+      // NEED TO CHECK IF THIS CLAUSE IS IN THE CLUSTER!!! -> is this clause active??
+
       // update this var's counts & the unsat set
       if (thisSat && satCount == 1) {
         var.incBreakCount();

@@ -58,7 +58,7 @@ public class BasicTests {
     Config config = new Config();
 
     config.nClusters = 100;
-    config.numSoftClauses = 0;
+    //config.numSoftClauses = 0;
     config.n = 15;
     config.k = 3;
     config.alpha = 3.5;

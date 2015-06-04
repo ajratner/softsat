@@ -57,7 +57,6 @@ public class BGMCSatDataGenerator {
     for (Clause clause : clauses) {
       for (Variable var : clause.getVars()) { var.addToClausesIn(clause); }
     }
-
     return clauses;
   }
 
@@ -86,26 +85,20 @@ public class BGMCSatDataGenerator {
         for (int clusterId2 = clusterId1 + 1; clusterId2 < nClusters; clusterId2++) {
           ArrayList<Literal> literals = new ArrayList<Literal>();
           for (int litId = 0; litId < varIds.length; litId++) {
-	    Variable var1 = varMap.get(new VariableId(clusterId1,varIds[litId]));
-	    Variable var2 = varMap.get(new VariableId(clusterId2,varIds[litId]));
-	    assert var1 != null;
-	    assert var2 != null;
-	    
+            Variable var1 = varMap.get(new VariableId(clusterId1,varIds[litId]));
+            Variable var2 = varMap.get(new VariableId(clusterId2,varIds[litId]));
+            assert var1 != null;
+            assert var2 != null;
             literals.add(new Literal(var1,negateds[litId]));
             literals.add(new Literal(var2,negateds[litId]));
           }
           /* [SERIAL] */
           Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
-	  for (Variable var : softClause.getVars()) { var.addToClausesIn(softClause); }
-
-	  softClauses.add(new SoftClause(softClause,clusterId1,clusterId2));
+          for (Variable var : softClause.getVars()) { var.addToClausesIn(softClause); }
+          softClauses.add(new SoftClause(softClause,clusterId1,clusterId2));
         }
       }
     }
-
-    // Set the pointers from Variable to Cluster for the set then return
-    // [TODO URGENT] this needs to take the soft clauses too!
-    DataGeneratorUtils.setClausesIn(clusters);
     return new Data(clusters,softClauses);
   }
 

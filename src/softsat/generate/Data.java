@@ -12,5 +12,4 @@ public class Data {
     this.clusters = clusters;
     this.softClauses = softClauses;
   }
-
 }
