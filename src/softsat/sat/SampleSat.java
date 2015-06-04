@@ -69,7 +69,7 @@ public class SampleSat {
       if (walkSatMode && unsatisfied.isEmpty()) { return true; }
 
       // SA step: pick a random variable to flip and accept wp e^(-deltaCost)
-      if (rand.nextDouble() < config.pSimAnnealStep) {
+      if (!walkSatMode && (rand.nextDouble() < config.pSimAnnealStep)) {
         Variable var = activeVars.get(rand.nextInt(activeVars.size()));
         if (rand.nextDouble() < Math.exp(-var.getCost() / config.simAnnealTemp)) { 
           flipAndUpdate(var);
@@ -152,7 +152,7 @@ public class SampleSat {
       }
     }
   }
-
+    
   public boolean runSolve() { return run(true); }
 
   public boolean runSample() { return run(false); }

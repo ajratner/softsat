@@ -72,8 +72,6 @@ public class BGMCSatDataGenerator {
       clusters.add(generateRandomKSAT(clusterId,n,k,alpha));
     }
 
-
-
     // Generate the soft 'connector' inter-cluster clauses
     for (int softClauseId=0; softClauseId < numSoftClauses; softClauseId++) {
       int[] varIds = new int[clusterNodesPerSoftClause];

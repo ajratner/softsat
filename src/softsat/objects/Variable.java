@@ -21,8 +21,8 @@ public class Variable {
   /**
    * A fixed list of the clauses that this Variable is in, eg agnostic to active/inactive status
    */ 
-  private ArrayList<Clause> clausesIn = new ArrayList<Clause>();
-  public ArrayList<Clause> getClausesIn() { return clausesIn; }
+  private HashSet<Clause> clausesIn = new HashSet<Clause>();
+  public ArrayList<Clause> getClausesIn() { return new ArrayList<Clause>(clausesIn); }
   public void addToClausesIn(Clause clause) { this.clausesIn.add(clause); }
 
   /**

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import softsat.objects.Variable;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
+import softsat.objects.SoftClause;
 import softsat.util.PrettyPrinter;
 import softsat.generate.BGMCSatDataGenerator;
 import softsat.generate.Data;
@@ -28,7 +29,7 @@ public class BasicTests {
     config.n = 1000;
     config.k = 3;
     config.alpha = 2.0;
-    config.nSampleSatSteps = 100*config.n;
+    config.nSampleSatSteps = 10*config.n;
     System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
 
     System.out.println("Generating dataset...");
@@ -37,11 +38,10 @@ public class BasicTests {
     
     System.out.println("Testing on each hard SAT cluster:");
     for (int clusterId = 0 ; clusterId < data.clusters.size(); clusterId++) {
-      System.out.println("cluster " + clusterId);
       SampleSat satSolver = new SampleSat(clusterId, data.clusters.get(clusterId), config);
       satSolver.runSolve();
       if (!checkSat(data.clusters.get(clusterId))) {
-        System.out.println("TEST FAILED.");
+        System.out.println("TEST FAILED (clusterId="+clusterId+")");
         return false;
       }
     }
@@ -57,8 +57,8 @@ public class BasicTests {
     System.out.println("Running BRUTE FORCE test of WalkSat:");
     Config config = new Config();
 
-    config.nClusters = 10;
-    config.n = 10;
+    config.nClusters = 100;
+    config.n = 15;
     config.k = 3;
     config.alpha = 3.5;
     System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
@@ -66,7 +66,7 @@ public class BasicTests {
     System.out.println("Generating dataset...");
     BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
     Data data = datagen.generateData();
-    
+
     StringBuilder s = new StringBuilder();
     // for (int i=0; i < Math.pow(2, config.n); i++) { s.append("U"); }
     for (int i=0; i < config.n; i++) { s.append("U"); }
@@ -74,18 +74,19 @@ public class BasicTests {
 
     System.out.println("Testing on each hard SAT cluster:");
     for (int clusterId = 0 ; clusterId < data.clusters.size(); clusterId++) {
-      System.out.println("cluster " + clusterId);
+
+      // Run BruteForce
+      BruteForceSat bFSatSolver = new BruteForceSat(clusterId,data.clusters.get(clusterId),config);
+      bFSatSolver.runSolve();
+      boolean bFAns = checkSat(data.clusters.get(clusterId));
 
       // Run WalkSAT
       SampleSat satSolver = new SampleSat(clusterId, data.clusters.get(clusterId), config);
       satSolver.runSolve();
       boolean walkSatAns = checkSat(data.clusters.get(clusterId));
 
-      // Run BruteForce
-      BruteForceSat bFSatSolver = new BruteForceSat(clusterId, data.clusters.get(clusterId), config);
-      bFSatSolver.runSolve();
-      if (checkSat(data.clusters.get(clusterId)) != walkSatAns) {
-        System.out.println("TEST FAILED.");
+      if (bFAns != walkSatAns) {
+        System.out.println("TEST FAILED (clusterId="+clusterId+"): WalkSAT=" + walkSatAns + ", BruteForce=" + !walkSatAns);
         return false;
       }
     }
@@ -97,7 +98,7 @@ public class BasicTests {
   private static boolean checkSat(ArrayList<Clause> clauses) {
     for (Clause clause : clauses) {
       if (!clause.isSat()) {
-        System.out.println("Clause " + clause + " is UNSAT.");
+        //System.out.println("Clause " + clause + " is UNSAT.");
         return false;
       }
     }
@@ -105,7 +106,7 @@ public class BasicTests {
   }
 
   public static void runAll() {
-    testWalkSatBrute();
-    testWalkSat();
+    assert testWalkSatBrute();
+    assert testWalkSat();
   }
 }
