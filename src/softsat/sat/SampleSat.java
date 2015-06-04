@@ -92,16 +92,17 @@ public class SampleSat {
 
         // pick according to break count heuristic
         } else {
-          int minBreakCount = Integer.MAX_VALUE;
-          Variable minBreakVar = clauseVars.get(0);
+          int minCost = Integer.MAX_VALUE;
+          Variable minCostVar = clauseVars.get(0);
           for (Variable var : clauseVars) {
-            if (isActive(var) && (var.getBreakCount() < minBreakCount)) {
-              minBreakCount = var.getBreakCount();
-              minBreakVar = var;
+            if (isActive(var) && (var.getCost() < minCost)) {
+              minCost = var.getCost();
+              minCostVar = var;
             }
           }
-          flipAndUpdate(minBreakVar);
+          flipAndUpdate(minCostVar);
         }
+        System.out.println(unsatisfied.size);
       }
     }
     return unsatisfied.isEmpty();
@@ -122,21 +123,15 @@ public class SampleSat {
         }
       }
 
-      // update the unsat list if necessary
-      boolean inUnsat = unsatisfied.contains(clause);
-      if (inUnsat && satCount > 0) {
-        unsatisfied.removeObj(clause);
-      } else if (!inUnsat && satCount == 0) {
-        unsatisfied.add(clause);
-      }
-
-      // update this var's counts
+      // update this var's counts & the unsat set
       if (thisSat && satCount == 1) {
         var.incBreakCount();
         var.decMakeCount();
+        unsatisfied.removeObj(clause);
       } else if (!thisSat && satCount == 0) {
         var.incMakeCount();
         var.decBreakCount();
+        unsatisfied.add(clause);
       }
 
       // Update neighboring vars' counts

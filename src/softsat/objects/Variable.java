@@ -40,7 +40,7 @@ public class Variable {
     breakCount = 0;
   }
   public int getBreakCount() { return breakCount; }
-  public int getCost() { return makeCount - breakCount; }
+  public int getCost() { return breakCount - makeCount; }
 
   /**
    * Set the initial make / break counts.  This will *not* change the make / break counts of any
