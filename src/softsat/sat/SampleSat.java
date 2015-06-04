@@ -41,8 +41,8 @@ public class SampleSat {
   private void init(boolean resetAssignments) {
     
     // Optionally randomly reset the assignments of the active (ie in-cluster) vars
-    for (Variable var : activeVars) { 
-      if (resetAssignments) { var.randomFlip(); }
+    if (resetAssignments) {
+      for (Variable var : activeVars) { var.randomFlip(); }
     }
 
     // Set the make/break counts in the vars
@@ -74,7 +74,7 @@ public class SampleSat {
         if (rand.nextDouble() < Math.exp(-var.getCost() / config.simAnnealTemp)) { 
           flipAndUpdate(var);
         }
-      
+
       // WS step: pick a random unsat clause- pick var to flip randomly or by breakCount
       } else {
         Clause clause = unsatisfied.getRandomElement();
@@ -133,8 +133,10 @@ public class SampleSat {
       // update this var's counts
       if (thisSat && satCount == 1) {
         var.incBreakCount();
+        var.decMakeCount();
       } else if (!thisSat && satCount == 0) {
         var.incMakeCount();
+        var.decBreakCount();
       }
 
       // Update neighboring vars' counts
