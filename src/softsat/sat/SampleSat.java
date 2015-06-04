@@ -102,7 +102,6 @@ public class SampleSat {
           }
           flipAndUpdate(minCostVar);
         }
-        System.out.println(unsatisfied.size);
       }
     }
     return unsatisfied.isEmpty();

@@ -63,7 +63,7 @@ public class Config {
   /**
    * The total number of steps to take in SampleSat to get a sample
    */
-  public long nSampleSatSteps = 10000;
+  public long nSampleSatSteps = 1000;
 
   /**
    * Whether all the clusters should be active.  E.g. for 'vanilla' MC-SAT.
