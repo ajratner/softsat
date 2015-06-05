@@ -8,7 +8,7 @@ Then run with `java -jar softsat.jar`.
 Note: pass `-ea` to have asserts work.
 
 ## TODO (current primary)
-* Redo basic MCSat implementation
+* Implement: (i) WalkSat after SampleSat if UNSAT; (ii) random restarts for WalkSat
 * Test basic MCSat implementation- how to do this?
 * **DecompMCSat implementation w/ specifiable variable ordering**
 * **JunctionTree MC-SAT implementation**
