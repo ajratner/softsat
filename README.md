@@ -8,19 +8,15 @@ Then run with `java -jar softsat.jar`.
 Note: pass `-ea` to have asserts work.
 
 ## TODO (current primary)
-* *Fix issues with data generation: something wrong w/ clausesIn and/or isActive stuff?*
-* *Can data generation be simplified a bit?*
-* Test MCSat implementation
-* Test BCMCSat
-* Test VanillaMCSat
-* Move e.g. MC-SAT params into config
-* Make SetClausesIn a member of Data, and make sure to include the softclauses
-* Write independent test for varToClause arrays (in progress)
-
-## TODO (new components)
-* **Conditional games for relative marginal comparisons**
-* **JunctionTreeSAT & non-fully-connected data topology!**
+* Switch SAT solver/samplers to take in list of active clauses, vars (no .isActive, just check membership)
+* Test basic MCSat implementation- how to do this?
+* Finish general "Decomposed" MCSat w/ specifiable variable ordering
+* **JunctionTree MC-SAT implementation**
+* **Conditional games for relative marginal evaluation**
+* Write more basic tests!
 
 ### TODO (lower priority)
+* General SAT solver interface class
+* Config clean up / decomposition: move e.g. MC-SAT params into separate configs?
 * Incremental maintenance of SAT Solver state *in between calls* to SAT solver (e.g. from MC-SAT outer loop)
 * Asynchronous / parallel execution!
