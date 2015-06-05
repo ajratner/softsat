@@ -72,4 +72,9 @@ public class Config {
 
   public boolean sampleSatDebug = true;
 
+  
+  // MC-SAT CONFIG
+
+  public long nMCSatSteps = 1000;
+
 }

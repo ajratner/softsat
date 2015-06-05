@@ -18,38 +18,6 @@ import softsat.config.Config;
 public class BasicTests {
 
   /**
-   * Testing basic WalkSat
-   */
-  public static boolean testWalkSat() {
-    System.out.println("---\n");
-    System.out.println("Running basic test of WalkSat:");
-    Config config = new Config();
-
-    config.nClusters = 10;
-    config.n = 1000;
-    config.k = 3;
-    config.alpha = 2.0;
-    config.nSampleSatSteps = 10*config.n;
-    System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
-
-    System.out.println("Generating dataset...");
-    BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
-    Data data = datagen.generateData();
-    
-    System.out.println("Testing on each hard SAT cluster:");
-    for (int clusterId = 0 ; clusterId < data.clusters.size(); clusterId++) {
-      SampleSat satSolver = new SampleSat(clusterId, data.clusters.get(clusterId), config);
-      satSolver.runSolve();
-      if (!checkSat(data.clusters.get(clusterId))) {
-        System.out.println("TEST FAILED (clusterId="+clusterId+")");
-        return false;
-      }
-    }
-    System.out.println("TEST PASSED!");
-    return true;
-  }
-
-  /**
    * Testing basic WalkSat on *SMALL* instances against a correct brute force solver
    */
   public static boolean testWalkSatBrute() {
@@ -64,27 +32,34 @@ public class BasicTests {
     config.alpha = 3.5;
     System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
 
-    System.out.println("Generating dataset...");
     BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
     Data data = datagen.generateData();
 
     StringBuilder s = new StringBuilder();
     // for (int i=0; i < Math.pow(2, config.n); i++) { s.append("U"); }
-    for (int i=0; i < config.n; i++) { s.append("U"); }
-    System.out.println("Preparing to BR" + s.toString() + "TE!"); 
+    // for (int i=0; i < config.n; i++) { s.append("U"); }
+    // System.out.println("Preparing to BR" + s.toString() + "TE!"); 
 
-    System.out.println("Testing on each hard SAT cluster:");
+    // System.out.println("Testing on each hard SAT cluster:");
     for (int clusterId = 0 ; clusterId < data.clusters.size(); clusterId++) {
 
+      // The active clauses are just the clauses in a cluster and the active vars
+      // are the vars in that cluster (i.e. we are ignoring the connectors entirely)
+      ArrayList<Clause> clauses = data.clusters.get(clusterId);
+      ArrayList<Variable> vars = new ArrayList<Variable>();
+      for (Clause clause : clauses) {
+        vars.addAll(clause.getVars());
+      }
+
       // Run BruteForce
-      BruteForceSat bFSatSolver = new BruteForceSat(clusterId,data.clusters.get(clusterId),config);
+      BruteForceSat bFSatSolver = new BruteForceSat(clauses, vars, config);
       bFSatSolver.runSolve();
-      boolean bFAns = checkSat(data.clusters.get(clusterId));
+      boolean bFAns = checkSat(clauses);
 
       // Run WalkSAT
-      SampleSat satSolver = new SampleSat(clusterId, data.clusters.get(clusterId), config);
+      SampleSat satSolver = new SampleSat(clauses, vars, config);
       satSolver.runSolve();
-      boolean walkSatAns = checkSat(data.clusters.get(clusterId));
+      boolean walkSatAns = checkSat(clauses);
 
       if (bFAns != walkSatAns) {
         System.out.println("TEST FAILED (clusterId="+clusterId+"): WalkSAT=" + walkSatAns + ", BruteForce=" + !walkSatAns);
@@ -93,6 +68,47 @@ public class BasicTests {
     }
     System.out.println("TEST PASSED!");
     //PrettyPrinter.printListOfClauses(data.clusters.get(0));
+    return true;
+  }
+
+  /**
+   * Testing basic WalkSat
+   */
+  public static boolean testWalkSat() {
+    System.out.println("---\n");
+    System.out.println("Running basic test of WalkSat:");
+    Config config = new Config();
+
+    config.nClusters = 10;
+    config.n = 1000;
+    config.k = 3;
+    config.alpha = 2.0;
+    config.nSampleSatSteps = 10*config.n;
+    System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
+
+    //System.out.println("Generating dataset...");
+    BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
+    Data data = datagen.generateData();
+    
+    //System.out.println("Testing on each hard SAT cluster:");
+    for (int clusterId = 0 ; clusterId < data.clusters.size(); clusterId++) {
+
+      // The active clauses are just the clauses in a cluster and the active vars
+      // are the vars in that cluster (i.e. we are ignoring the connectors entirely)
+      ArrayList<Clause> clauses = data.clusters.get(clusterId);
+      ArrayList<Variable> vars = new ArrayList<Variable>();
+      for (Clause clause : clauses) {
+        vars.addAll(clause.getVars());
+      }
+
+      SampleSat satSolver = new SampleSat(clauses, vars, config);
+      satSolver.runSolve();
+      if (!checkSat(clauses)) {
+        System.out.println("TEST FAILED (clusterId="+clusterId+")");
+        return false;
+      }
+    }
+    System.out.println("TEST PASSED!");
     return true;
   }
 

@@ -42,32 +42,6 @@ public class Variable {
   public int getBreakCount() { return breakCount; }
   public int getCost() { return breakCount - makeCount; }
 
-  /**
-   * Set the initial make / break counts.  This will *not* change the make / break counts of any
-   * other vars
-   * TODO: move this to SampleSat / integrate w function there?
-   */
-  public void setMakeBreakCounts() {
-    makeCount = 0;
-    breakCount = 0;
-    for (Clause clause : clausesIn) {
-      
-      // Find out if this var is sat in this clause & get the total sat count
-      int satCount = 0;
-      boolean thisSat = false;
-      for (Literal literal : clause.getLiterals()) {
-        if (literal.isSat()) { 
-          satCount += 1;
-          if (literal.getVar() == this) { thisSat = true; } 
-        }
-      }
-
-      // Update this var's counts
-      if (thisSat && satCount == 1) { breakCount += 1; }
-      if (!thisSat && satCount == 0) { makeCount += 1; }
-    }
-  }
-
   public void randomFlip() {
     Random rand = new Random();
     isTrue = rand.nextBoolean();
