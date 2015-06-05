@@ -77,4 +77,6 @@ public class Config {
 
   public long nMCSatSteps = 1000;
 
+  public long MCSatBurnIn = 100;
+
 }

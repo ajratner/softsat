@@ -2,6 +2,7 @@ package softsat.inference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.lang.Math;
 import java.util.Random;
 import softsat.objects.Clause;
@@ -19,31 +20,43 @@ public class MCSat {
   private HashSet<Variable> activeVarsSet;
   private Config config;
 
-  public void sample() {
-    for (long iter = 0; iter < config.nMCSatSteps + 1; iter++) {
+  public HashMap<Variable, int[]> sample() {
+
+    // Initialize sample counts
+    HashMap<Variable, int[]> sampleCounts = new HashMap<Variable, int[]>();
+    for (Variable var : activeVars) { sampleCounts.put(var, new int[2]); }
+
+    for (long iter = -1; iter < config.nMCSatSteps; iter++) {
 
       // Add all clauses which were satisfied the previous iteration wp 1-e^{-w}
-      // On iteration 0 initialize by running WalkSat over the hard clauses only
+      // On iteration -1 initialize by running WalkSat over the hard clauses only
       ArrayList<Clause> Mc = new ArrayList<Clause>();
-      ArrayList<Variable> Mv = new ArrayList<Variable>();
+      HashSet<Variable> Mv = new HashSet<Variable>();
       for (Clause clause : activeClauses) {
-        if (clause.isHard() || (iter > 0 && clause.isSat() && rand.nextFloat() < 1 - Math.exp(-clause.getLogWeight()))) {
+        if (clause.isHard() || (iter >= 0 && clause.isSat() && rand.nextFloat() < 1 - Math.exp(-clause.getLogWeight()))) {
           Mc.add(clause);
           for (Variable var : clause.getVars()) {
             if (activeVarsSet.contains(var)) { Mv.add(var); }
           }
         }
       }
-      SampleSat satSolver = new SampleSat(Mc, Mv, config);
-      if (iter > 0) {
-        satSolver.runSample();
+
+      // Sample from the set of satisfying assignments using the SAT solver
+      SampleSat satSolver = new SampleSat(Mc, new ArrayList<Variable>(Mv), config);
+      if (iter >= 0) {
+        assert satSolver.runSample();
       } else {
-        satSolver.runSolve();
+        assert satSolver.runSolve();
       }
 
-      // TODO: handle case where satSample returns false?  Should revert to the previous var assignment if so...
-      // TODO: sample here!
+      // Update sample counts
+      if (iter > config.MCSatBurnIn) {
+        for (Variable var : Mv) {
+          sampleCounts.get(Mv)[var.getIsTrue() ? 1 : 0] += 1;
+        }
+      }
     }
+    return sampleCounts;
   }
 
   public MCSat(ArrayList<Clause> clauses, ArrayList<Variable> vars, Config config) {
