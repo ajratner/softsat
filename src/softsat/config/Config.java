@@ -40,12 +40,6 @@ public class Config {
   // SAMPLESAT CONFIG
   
   /**
-   * Whether to randomly initialize the assignments to the active variables each iteration of
-   * the SAT solver / sampler
-   */
-  public boolean satResetAssignments = true;
-
-  /**
    * The probability of taking a 'simulated annealing' (SA) step in SampleSat
    */
   public double pSimAnnealStep = 0.5;  // following the original SampleSat paper
@@ -53,7 +47,8 @@ public class Config {
   /**
    * The temperature parameter for the SA step
    */
-  public double simAnnealTemp = 0.1;  // following the original SampleSat paper
+  public double simAnnealTemp = 0.5;  // following the MC-SAT paper
+  //public double simAnnealTemp = 0.1;  // following the original SampleSat paper
 
   /**
    * The probability of taking a random step in WalkSat
@@ -64,6 +59,19 @@ public class Config {
    * The total number of steps to take in SampleSat to get a sample
    */
   public long nSampleSatSteps = 1000;
+
+  /**
+   * The total minimum number of SA steps to take in SampleSat mode after a solution
+   * has been reached
+   */
+  public int minStepsPostSatFound = 10;  // Following the MC-SAT paper
+
+  /**
+   * Number of random restarts to use (in WalkSat mode).  Empirically number of iterations
+   * required often follows a power law, so randomly restarting is more effective than having
+   * much larger number of steps.
+   */
+  public long nWalkSatRestarts = 3;
 
   /**
    * Whether all the clusters should be active.  E.g. for 'vanilla' MC-SAT.

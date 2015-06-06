@@ -26,10 +26,11 @@ public class BasicTests {
     Config config = new Config();
 
     config.nClusters = 100;
-    //config.numSoftClauses = 0;
-    config.n = 15;
+    config.numSoftClauses = 0;
+    config.n = 20;
     config.k = 3;
     config.alpha = 3.5;
+    config.nSampleSatSteps = 100*config.n;
     System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
 
     BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
@@ -63,7 +64,11 @@ public class BasicTests {
 
       if (bFAns != walkSatAns) {
         System.out.println("TEST FAILED (clusterId="+clusterId+"): WalkSAT=" + walkSatAns + ", BruteForce=" + !walkSatAns);
-        return false;
+        System.out.println("Trying random restart...");
+        satSolver = new SampleSat(clauses, vars, config);
+        satSolver.runSolve();
+        walkSatAns = checkSat(clauses);
+        if (bFAns != walkSatAns) { return false; }
       }
     }
     System.out.println("TEST PASSED!");

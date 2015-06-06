@@ -17,7 +17,7 @@ import softsat.util.HashArray;
  * by stochastically switching between a simulated annealing (SA) and a WalkSat (WS) step.
  */
 public class SampleSat extends SatSolver {
-  private HashArray<Clause> unsatisfied;
+  private HashArray<Clause> unsat;
 
   /**
    * Initializes the primary counts / data structures for SampleSat.  Optionally resets the
@@ -35,9 +35,9 @@ public class SampleSat extends SatSolver {
     for (Variable var : getActiveVars()) { setVarCounts(var); }
 
     // Populate the HashSet of unsat clauses
-    unsatisfied = new HashArray<Clause>();
+    unsat = new HashArray<Clause>();
     for (Clause clause : getActiveClauses()) {
-      if (!clause.isSat()) { unsatisfied.add(clause); }
+      if (!clause.isSat()) { unsat.add(clause); }
     }
   }
 
@@ -45,23 +45,40 @@ public class SampleSat extends SatSolver {
    * Runs SampleSat, assuming all the clauses are 'hard' ie having weight infinity.
    * @return true iff a satisfying assignment is found 
    */
-  public boolean run(boolean walkSatMode) {
-    init(config.satResetAssignments);
+  public boolean run(boolean walkSatMode, boolean randomReset) {
+    init(randomReset);
+    boolean satFound = false;
+    int stepsPostSatFound = 0;
     for (long step = 0; step < config.nSampleSatSteps; step++) {
+      
+      // Per the MC-SAT implementation, in SampleSat mode we continue after finding a soln
+      // Note: temporary assert to see if this works okay (not in tuffy)
+      if (satFound) { stepsPostSatFound += 1; }
+      assert stepsPostSatFound < 10*config.minStepsPostSatFound;
 
-      // WalkSat terminates here
-      if (walkSatMode && unsatisfied.isEmpty()) { return true; }
+      // Termination conditions
+      if (unsat.isEmpty()) {
+        satFound = true;
+        if (walkSatMode || stepsPostSatFound >= config.minStepsPostSatFound) { return true; }
+      }
 
       // SA step: pick a random variable to flip and accept wp e^(-deltaCost)
-      if (!walkSatMode && (rand.nextDouble() < config.pSimAnnealStep)) {
+      // Note: We only take SampleSat steps if at a SAT assignment, as per tuffy impl.
+      // The informal justification is that we use WS to find assignment cluster,
+      // then use SA steps to explore locally in more uniform fashion
+      if (!walkSatMode && (unsat.isEmpty() || rand.nextDouble() < config.pSimAnnealStep)) {
         Variable var = getActiveVars().get(rand.nextInt(getActiveVars().size()));
-        if (rand.nextDouble() < Math.exp(-var.getCost() / config.simAnnealTemp)) { 
+
+        // Following general Metropolis acceptance prob.
+        // e.g. see http://en.wikipedia.org/wiki/Simulated_annealing#Acceptance_probabilities
+        int cost = var.getCost();
+        if (cost <= 0 || rand.nextDouble() < Math.exp(-cost / config.simAnnealTemp)) { 
           flipAndUpdate(var);
         }
 
       // WS step: pick a random unsat clause- pick var to flip randomly or by heuristic
       } else {
-        Clause clause = unsatisfied.getRandomElement();
+        Clause clause = unsat.getRandomElement();
         ArrayList<Variable> clauseVars = clause.getVars();
         Collections.shuffle(clauseVars);
         
@@ -75,7 +92,7 @@ public class SampleSat extends SatSolver {
           }
 
         // pick according to heuristic
-        // NOTE: here we use cost = breakCount - makeCount; some sources just use breakCount
+        // Note: here we use cost = breakCount - makeCount; some sources just use breakCount
         } else {
           int minCost = Integer.MAX_VALUE;
           Variable minCostVar = clauseVars.get(0);
@@ -89,7 +106,30 @@ public class SampleSat extends SatSolver {
         }
       }
     }
-    return unsatisfied.isEmpty();
+    return unsat.isEmpty();
+  }
+
+  /**
+   * Run SampleSat in WalkSat mode, ie doing MAP inference.  Search greedily for a satisfying
+   * assignment using WalkSat steps only.  Optionally utilize random restarts
+   */
+  public boolean runSolve() { 
+    for (int r = 0; r < config.nWalkSatRestarts; r++) {
+      if (run(true, true)) { return true; }
+    }
+    return false;
+  }
+
+  /**
+   * Run SampleSat for fixed number of steps. Attempt to sample uniformly from the space of SAT
+   * assignments by alternating WalkSat steps with simulated annealing steps
+   */
+  public boolean runSample() { 
+    if (run(false, true)) { return true; }
+
+    // Run in WalkSat mode as failure-case backup
+    System.out.println("WARNING: SampleSat failed, running in WalkSat mode!");
+    return run(true, false);
   }
 
   private void updateVarCounts(Variable var, boolean initial) {
@@ -114,20 +154,20 @@ public class SampleSat extends SatSolver {
         var.incBreakCount();
         if (!initial) {
           var.decMakeCount();
-          unsatisfied.removeObj(clause);
+          unsat.removeObj(clause);
         }
       } else if (!thisSat && satCount == 0) {
         var.incMakeCount();
         if (!initial) {
           var.decBreakCount();
-          unsatisfied.add(clause);
+          unsat.add(clause);
         }
       }
 
       // Update neighboring vars' counts
       if (!initial) {
         for (Literal neighbor : clause.getLiterals()) {
-          if (neighbor.getVar() == var || !isActive(var)) { continue; }
+          if (neighbor.getVar() == var || !isActive(neighbor.getVar())) { continue; }
           if (thisSat && neighbor.isSat() && satCount == 2) {
             neighbor.getVar().decBreakCount();
           } else if (thisSat && !neighbor.isSat() && satCount == 1) {
@@ -148,10 +188,6 @@ public class SampleSat extends SatSolver {
   }
 
   private void setVarCounts(Variable var) { updateVarCounts(var, true); }
-
-  public boolean runSolve() { return run(true); }
-
-  public boolean runSample() { return run(false); }
 
   public SampleSat(ArrayList<Clause> clauses, ArrayList<Variable> vars, Config config) {
     super(clauses, vars, config);
