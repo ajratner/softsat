@@ -9,7 +9,6 @@ import softsat.objects.Variable;
 import softsat.objects.VariableId;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
-import softsat.objects.SoftClause;
 import softsat.config.Config;
 import softsat.util.Pair;
 
@@ -18,7 +17,7 @@ import softsat.util.Pair;
  * 'soft' clauses.  More specifically, generates a set of random k-SAT clauses ('clusters') 
  * over atoms which are also members of soft (weight < inf) inter-cluster clauses
  */
-public class BGMCSatDataGenerator {
+public class HardSoftDataGenerator {
 
   private HashMap<VariableId,Variable> varMap;
 
@@ -64,7 +63,7 @@ public class BGMCSatDataGenerator {
     varMap = new HashMap<VariableId,Variable>();
 
     ArrayList<ArrayList<Clause> > clusters = new ArrayList<ArrayList<Clause> >();
-    ArrayList<SoftClause> softClauses = new ArrayList<SoftClause>();
+    ArrayList<Clause> softClauses = new ArrayList<Clause>();
 
     // Generate the hard k-SAT clusters
     for (int clusterId=0; clusterId < nClusters; clusterId++) {
@@ -95,11 +94,11 @@ public class BGMCSatDataGenerator {
           /* [SERIAL] */
           Clause softClause = new Clause(literals,rand.nextGaussian()*softWeightStd + softWeightMean);
           for (Variable var : softClause.getVars()) { var.addToClausesIn(softClause); }
-          softClauses.add(new SoftClause(softClause,clusterId1,clusterId2));
+          softClauses.add(softClause);
         }
       }
     }
-    return new Data(clusters,softClauses);
+    return new Data(clusters, softClauses);
   }
 
   private int nClusters;
@@ -111,7 +110,7 @@ public class BGMCSatDataGenerator {
   private double softWeightMean;
   private double softWeightStd;
 
-  public BGMCSatDataGenerator(Config config) {
+  public HardSoftDataGenerator(Config config) {
     this.nClusters = config.nClusters;
     this.n = config.n;
     this.k = config.k;

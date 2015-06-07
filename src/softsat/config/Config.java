@@ -83,6 +83,8 @@ public class Config {
   
   // MC-SAT CONFIG
 
+  public boolean MCSatRandInit = true;
+
   public long nMCSatSteps = 1000;
 
   public long MCSatBurnIn = 100;

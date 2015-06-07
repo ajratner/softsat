@@ -7,14 +7,14 @@ Then run with `java -ea -jar softsat.jar`.
 
 
 ## TODO (current primary)
-* **DecompMCSat implementation w/ specifiable variable ordering**
-* **JunctionTree MC-SAT implementation**
 * **Conditional games for relative marginal evaluation**
-* Write exact-marginal test for MC-SAT
-* Basic Gibbs sampler?
 * **Framework for running experiments / plotting results**
+* **JunctionTree MC-SAT implementation**
+* Basic Gibbs sampler?
+* Write exact-marginal test for MC-SAT
 
 
 ### TODO (lower priority)
+* *Clean up HardSoftDataGenerator.java (config, get rid of VariableId class?)*
 * Asynchronous / parallel execution!
 * Use Relsat (Bayardo & Pehaushek 2000) to generate larger exact solutions to compare with?

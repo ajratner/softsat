@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import softsat.objects.Variable;
 import softsat.objects.Literal;
 import softsat.objects.Clause;
-import softsat.objects.SoftClause;
 import softsat.util.PrettyPrinter;
-import softsat.generate.BGMCSatDataGenerator;
+import softsat.generate.HardSoftDataGenerator;
 import softsat.generate.Data;
 import softsat.sat.SampleSat;
 import softsat.sat.BruteForceSat;
@@ -33,7 +32,7 @@ public class BasicTests {
     config.nSampleSatSteps = 100*config.n;
     System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
 
-    BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
+    HardSoftDataGenerator datagen = new HardSoftDataGenerator(config);
     Data data = datagen.generateData();
 
     // StringBuilder s = new StringBuilder();
@@ -92,7 +91,7 @@ public class BasicTests {
     System.out.println("Running "+config.nClusters+" iterations of (n,k,alpha) = ("+config.n+","+config.k+","+config.alpha+")");
 
     //System.out.println("Generating dataset...");
-    BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
+    HardSoftDataGenerator datagen = new HardSoftDataGenerator(config);
     Data data = datagen.generateData();
     
     //System.out.println("Testing on each hard SAT cluster:");
