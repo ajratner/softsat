@@ -7,12 +7,12 @@ Then run with `java -ea -jar softsat.jar`.
 
 
 ## TODO (current primary)
-* Test basic MCSat implementation- how to do this?
 * **DecompMCSat implementation w/ specifiable variable ordering**
 * **JunctionTree MC-SAT implementation**
 * **Conditional games for relative marginal evaluation**
+* Write exact-marginal test for MC-SAT
+* Basic Gibbs sampler?
 * **Framework for running experiments / plotting results**
-* Write more basic tests!
 
 
 ### TODO (lower priority)

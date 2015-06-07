@@ -36,7 +36,7 @@ public class BasicTests {
     BGMCSatDataGenerator datagen = new BGMCSatDataGenerator(config);
     Data data = datagen.generateData();
 
-    StringBuilder s = new StringBuilder();
+    // StringBuilder s = new StringBuilder();
     // for (int i=0; i < Math.pow(2, config.n); i++) { s.append("U"); }
     // for (int i=0; i < config.n; i++) { s.append("U"); }
     // System.out.println("Preparing to BR" + s.toString() + "TE!"); 
