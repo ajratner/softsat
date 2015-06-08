@@ -80,7 +80,8 @@ public class ConditionalGames {
    * Default constructor accepts a list of clauses, vars and two conditional marginal estimation
    * objects with an estimateMarginal(Variable var, boolean resample) function
    */
-  public ConditionalGames(ArrayList<Variable> vars, DecompMCSat Q, DecompMCSat R, Config config) {
+  public ConditionalGames(ArrayList<Clause> clauses, ArrayList<Variable> vars, DecompMCSat Q, DecompMCSat R, Config config) {
+    this.clauses = clauses;
     this.vars = vars;
     this.Q = Q;
     this.R = R;
