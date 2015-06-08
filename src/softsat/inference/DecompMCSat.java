@@ -20,6 +20,7 @@ public class DecompMCSat {
   private ArrayList<HashSet<Clause>> clauseBlocks;
   private ArrayList<HashSet<Variable>> varBlocks;
   private int nBlocks;
+  private String mode;
   private Config config;
 
   HashMap<Variable, int[]> sampleCounts;
@@ -76,13 +77,21 @@ public class DecompMCSat {
   public double estimateMarginal(Variable var, boolean resample) {
     if (resample) { sample(); }
     int[] counts = sampleCounts.get(var);
-    return counts[1] / (counts[0] + counts[1]);
+    if (config.debug > 2) {
+      System.out.println("Counts = (" + counts[1] + "," + counts[0] + ")");
+    }
+    return ((double) counts[1]) / (counts[0] + counts[1]);
+  }
+
+  public String toString() {
+    return "<DecompMCSat(Mode=" + this.mode + ")>";
   }
 
   /**
    * Default constructor for Data object consisting of hard clusters connected by soft clauses.
    */
   public DecompMCSat(Data data, Config config, String mode) {
+    this.mode = mode;
     this.config = config;
     this.clauseBlocks = new ArrayList<HashSet<Clause>>();
     this.varBlocks = new ArrayList<HashSet<Variable>>();
@@ -138,6 +147,7 @@ public class DecompMCSat {
    * represent the blocking order.
    */
   public DecompMCSat(ArrayList<ArrayList<Clause>> clauseBlocks, ArrayList<ArrayList<Variable>> varBlocks, Config config) {
+    this.mode = "custom";
     this.config = config;
     assert clauseBlocks.size() == varBlocks.size();
     this.nBlocks = clauseBlocks.size();

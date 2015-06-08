@@ -6,6 +6,11 @@ package softsat.config;
  */
 public class Config {
 
+  /**
+   * Master debug level control
+   */
+  public int debug = 3;
+
   // DATASET CONFIG
   
   /**
@@ -21,7 +26,7 @@ public class Config {
   /**
    * Number of literals per hard cluster clause
    */
-  public int k = 2;
+  public int k = 3;
 
   /**
    * Ratio of clauses to variables in each hard SAT cluster
@@ -33,7 +38,7 @@ public class Config {
    */
   public int numSoftClauses = 2;
   public int clusterNodesPerSoftClause = 2;
-  public double softWeightMean = 10;
+  public double softWeightMean = 3;
   public double softWeightStd = 1;
 
 
@@ -64,7 +69,8 @@ public class Config {
    * The total minimum number of SA steps to take in SampleSat mode after a solution
    * has been reached
    */
-  public int minStepsPostSatFound = 10;  // Following the MC-SAT paper
+  //public int minStepsPostSatFound = 10;  // Following the MC-SAT paper
+  public int minStepsPostSatFound = 0;
 
   /**
    * Number of random restarts to use (in WalkSat mode).  Empirically number of iterations
@@ -73,14 +79,6 @@ public class Config {
    */
   public long nWalkSatRestarts = 3;
 
-  /**
-   * Whether all the clusters should be active.  E.g. for 'vanilla' MC-SAT.
-   */
-  public boolean allVarsActive = false;
-
-  public boolean sampleSatDebug = true;
-
-  
   // MC-SAT CONFIG
 
   public boolean MCSatRandInit = true;

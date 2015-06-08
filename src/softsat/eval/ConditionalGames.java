@@ -16,6 +16,8 @@ public class ConditionalGames {
   private DecompMCSat R;
   private ArrayList<Variable> vars;
   private ArrayList<Clause> clauses;
+  private double totalMarginalDiff;
+  private double totalAbsMarginalDiff;
 
   /**
    * Main evaluation method following the Conditional Games paper.  Returns S_4(Q,R).
@@ -23,39 +25,67 @@ public class ConditionalGames {
   public double eval() {
     return play(Q,R,false) - play(R,Q,false) - play(Q,R,true) + play(R,Q,true);
   }
+
+  /**
+   * Get the marginal difference stats (wrt Q - R).
+   * Must be called after playing at least one round.
+   */
+  public double getAvgMarginalDiff() { return totalMarginalDiff / vars.size(); }
+  public double getAvgAbsMarginalDiff() { return totalAbsMarginalDiff / vars.size(); }
   
   /**
    * One round of the game.  With cpMaximizingV, this is V^+(Q,R).
    */
   private double play(DecompMCSat mp, DecompMCSat cp, boolean cpMaximizingV) {
+    if (config.debug > 0) {
+      String goal = cpMaximizingV ? "CP maximizing V" : "MP maximizing V";
+      System.out.println("[CG]: Playing round: MP = " + mp + ", CP = " + cp + ", " + goal);
+    }
+    
+    // unfix all the vars first
+    for (Variable var : vars) { var.unfix(); }
+
+    // Play the game by iterating through the vars and playing a 'round' for each one
     double logSumMarginals = 0.0;
     boolean fixedVal;
-    for (Variable var : vars) { var.unfix(); }
+    int nVars = vars.size();
+    int i = 0;
+    totalMarginalDiff = 0.0;
+    totalAbsMarginalDiff = 0.0;
     for (Variable var : vars) {
       double mpMarginal = mp.estimateMarginal(var, true);
       double cpMarginal = mp.estimateMarginal(var, true);
+      if (config.debug > 1) {
+        System.out.println("MP marginal Q(x=T|...) = " + mpMarginal);
+        System.out.println("CP marginal R(x=T|...) = " + cpMarginal);
+      }
+      double marginalDiff = (mp == Q) ? mpMarginal - cpMarginal : cpMarginal - mpMarginal;
+      totalMarginalDiff += marginalDiff;
+      totalAbsMarginalDiff += Math.abs(marginalDiff);
       
       // Note: minor modification for hard constraints
       // Assume they agree in these cases!
       if (mpMarginal == 1 || mpMarginal == 0 || cpMarginal == 1 || cpMarginal == 0) {
         assert mpMarginal == cpMarginal;
-        var.setFixedAt(mpMarginal == 1);
-        continue;
-      }
-
-      double qRT = mpMarginal / cpMarginal;
-      double qRF = (1.0 - mpMarginal) / (1.0 - cpMarginal);
-
-      if (qRT < qRF) {
-        fixedVal = !cpMaximizingV;
-      } else if (qRT > qRF) {
-        fixedVal = cpMaximizingV;
+        fixedVal = (mpMarginal == 1);
       } else {
-        fixedVal = rand.nextBoolean();
-      }
+        double qRT = mpMarginal / cpMarginal;
+        double qRF = (1.0 - mpMarginal) / (1.0 - cpMarginal);
 
+        if (qRT < qRF) {
+          fixedVal = !cpMaximizingV;
+        } else if (qRT > qRF) {
+          fixedVal = cpMaximizingV;
+        } else {
+          fixedVal = rand.nextBoolean();
+        }
+      }
       var.setFixedAt(fixedVal);
       logSumMarginals += Math.log( fixedVal ? mpMarginal : (1.0 - mpMarginal) );
+      i += 1;
+      if (config.debug > 0) {
+        System.out.println("[CG]: (" + i + "/" + nVars + ") Variable fixed @ " + var);
+      }
     }
 
     // compute score V = \log(\prod_i q_i(x_i^*) / \prod_c \phi_c(x_c^*))
@@ -71,7 +101,7 @@ public class ConditionalGames {
     double logSum = 0.0;
     for (Clause clause : clauses) {
       if (clause.isHard() && !clause.isSat()) { return 0.0; }
-      if (clause.isSat()) { logSum += clause.getLogWeight(); }
+      if (!clause.isHard() && clause.isSat()) { logSum += clause.getLogWeight(); }
     }
     return logSum;
   }

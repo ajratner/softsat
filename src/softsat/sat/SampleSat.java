@@ -54,7 +54,7 @@ public class SampleSat extends SatSolver {
       // Per the MC-SAT implementation, in SampleSat mode we continue after finding a soln
       // Note: temporary assert to see if this works okay (not in tuffy)
       if (satFound) { stepsPostSatFound += 1; }
-      assert stepsPostSatFound < 10*config.minStepsPostSatFound;
+      assert stepsPostSatFound <= 100*config.minStepsPostSatFound;
 
       // Termination conditions
       if (unsat.isEmpty()) {
