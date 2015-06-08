@@ -7,8 +7,8 @@ Then run with `java -ea -jar softsat.jar`.
 
 
 ## TODO (current primary)
-* **Conditional games for relative marginal evaluation**
 * **Framework for running experiments / plotting results**
+* ***RUN TESTS!***
 * **JunctionTree MC-SAT implementation**
 * Basic Gibbs sampler?
 * Write exact-marginal test for MC-SAT

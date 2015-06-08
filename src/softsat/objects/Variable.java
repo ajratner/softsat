@@ -14,9 +14,23 @@ public class Variable {
 
   public int getClusterId() { return varId.getClusterId(); }
  
+  /**
+   * Whether the variable's value is fixed.  Eg for conditional probabilities
+   */
+  private boolean isFixed = false;
+  public boolean getIsFixed() { return isFixed; }
+  public void setFixedAt(boolean fixedVal) {
+    isTrue = fixedVal;
+    isFixed = false;
+  }
+  public void unfix() { isFixed = false; }
+
   private boolean isTrue = false;
   public boolean getIsTrue() { return isTrue; }
-  public void flipIsTrue() { isTrue = !isTrue; }
+  public void flipIsTrue() { 
+    assert !isFixed;
+    isTrue = !isTrue;
+  }
 
   /**
    * A fixed list of the clauses that this Variable is in, eg agnostic to active/inactive status
@@ -43,6 +57,7 @@ public class Variable {
   public int getCost() { return breakCount - makeCount; }
 
   public void randomFlip() {
+    assert !isFixed;
     Random rand = new Random();
     isTrue = rand.nextBoolean();
   }

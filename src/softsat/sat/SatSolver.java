@@ -34,8 +34,25 @@ abstract class SatSolver {
    */
   private ArrayList<Variable> activeVars;
   private HashSet<Variable> activeVarsSet;
+
+  /**
+   * Return only active vars that are not fixed eg for conditional probabilities
+   */
+  // NOTE: Assumes fixed vars are not changed during instantiation of SatSolver, for speed!
   protected ArrayList<Variable> getActiveVars() { return activeVars; }
   protected boolean isActive(Variable var) { return activeVarsSet.contains(var); }
+  /*
+  protected ArrayList<Variable> getActiveVars() { 
+    ArrayList<Variable> activeUnfixed = new ArrayList<Variable>();
+    for (Variable var : activeVars) {
+      if (!var.getIsFixed()) { activeUnfixed.add(var); }
+    }
+    return activeUnfixed;
+  }
+  protected boolean isActive(Variable var) { 
+    return !var.getIsFixed() && activeVarsSet.contains(var); 
+  }
+  */
 
   /**
    * Run SAT solver to greedily find a satisfying assignment, ie MAP inference.
@@ -51,7 +68,10 @@ abstract class SatSolver {
   public SatSolver(ArrayList<Clause> clauses, ArrayList<Variable> vars, Config config) {
     this.activeClausesSet = new HashSet<Clause>(clauses);
     this.activeClauses = new ArrayList<Clause>(activeClausesSet);
-    this.activeVarsSet = new HashSet<Variable>(vars);
+    this.activeVarsSet = new HashSet<Variable>();
+    for (Variable var : vars) {
+      if (!var.getIsFixed()) { this.activeVarsSet.add(var); }
+    }
     this.activeVars = new ArrayList<Variable>(activeVarsSet);
     this.config = config;
   }

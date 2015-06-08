@@ -22,10 +22,12 @@ public class DecompMCSat {
   private int nBlocks;
   private Config config;
 
-  public HashMap<Variable, int[]> sample() {
+  HashMap<Variable, int[]> sampleCounts;
+
+  public void sample() {
 
     // Initialize sample counts & opt. random init the vars
-    HashMap<Variable, int[]> sampleCounts = new HashMap<Variable, int[]>();
+    sampleCounts = new HashMap<Variable, int[]>();
     for (HashSet<Variable> varBlock : varBlocks) {
       for (Variable var : varBlock) {
         sampleCounts.put(var, new int[2]);
@@ -60,12 +62,21 @@ public class DecompMCSat {
         // Update sample counts
         if (iter > config.MCSatBurnIn) {
           for (Variable var : Mv) {
-            sampleCounts.get(Mv)[var.getIsTrue() ? 1 : 0] += 1;
+            sampleCounts.get(var)[var.getIsTrue() ? 1 : 0] += 1;
           }
         }
       }
     }
-    return sampleCounts;
+  }
+
+  /**
+   * Estimate the marginal for a specific variable based on sample function.  Optionally
+   * resample.  Assume binary variables so return the probability P(x=true)
+   */
+  public double estimateMarginal(Variable var, boolean resample) {
+    if (resample) { sample(); }
+    int[] counts = sampleCounts.get(var);
+    return counts[1] / (counts[0] + counts[1]);
   }
 
   /**
