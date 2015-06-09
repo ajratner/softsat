@@ -18,6 +18,8 @@ public class ConditionalGames {
   private Data data;
   private String mode1;
   private String mode2;
+  private double avgTotalMarginalDiff;
+  private double avgAbsMarginalDiff;
 
   /**
    * Main evaluation method following the Conditional Games paper.  Returns S_4(Q,R).
@@ -60,8 +62,13 @@ public class ConditionalGames {
       game3.run();
       game4.run();
     }
+    avgTotalMarginalDiff = (game1.getAvgMarginalDiff() - game2.getAvgMarginalDiff() + game3.getAvgMarginalDiff() - game4.getAvgMarginalDiff()) / 4.0;
+    avgAbsMarginalDiff = (game1.getAvgAbsMarginalDiff() + game2.getAvgAbsMarginalDiff() + game3.getAvgAbsMarginalDiff() + game4.getAvgAbsMarginalDiff()) / 4.0;
     return game1.getScore() - game2.getScore() - game3.getScore() + game4.getScore();
   }
+
+  public double getAvgTotalMarginalDiff() { return avgTotalMarginalDiff; }
+  public double getAvgAbsMarginalDiff() { return avgAbsMarginalDiff; }
 
   private ConditionalGamesS createGame(String mpMode, String cpMode, boolean polarity) {
     Data dataCopy = data.deepCopy();

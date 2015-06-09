@@ -34,7 +34,7 @@ public class ConditionalGamesS implements Runnable {
    * One round of the game.  With cpMaximizingV, this is V^+(Q,R).
    */
   public void run() {
-    if (config.debug > 0 && !config.cgRunParallel) {
+    if (config.debug > 0) {
       String goal = cpMaximizingV ? "CP maximizing V" : "MP maximizing V";
       System.out.println("[CG]: Playing round: MP = " + mp + ", CP = " + cp + ", " + goal);
     }
@@ -51,7 +51,7 @@ public class ConditionalGamesS implements Runnable {
     totalAbsMarginalDiff = 0.0;
     for (Variable var : vars) {
       double mpMarginal = mp.estimateMarginal(var, true);
-      double cpMarginal = mp.estimateMarginal(var, true);
+      double cpMarginal = cp.estimateMarginal(var, true);
       if (config.debug > 1 && !config.cgRunParallel) {
         System.out.println("MP marginal Q(x=T|...) = " + mpMarginal);
         System.out.println("CP marginal R(x=T|...) = " + cpMarginal);
