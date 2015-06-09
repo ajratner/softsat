@@ -9,8 +9,7 @@ Then run with `java -ea -jar softsat.jar`.
 
 
 ## TODO (current primary)
-* ***RUN TESTS!***
-* **JunctionTree MC-SAT implementation**
+* *JunctionTree MC-SAT implementation: fix bug(s?) + push final*
 * *Some sort of weighted-SP implementation...?*
 * SampleSat: store last SAT assignment found, explore for some number of additional steps, then return with this last SAT assignment
 * Basic Gibbs sampler?
