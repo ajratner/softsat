@@ -77,7 +77,7 @@ public class DecompMCSat {
   public double estimateMarginal(Variable var, boolean resample) {
     if (resample) { sample(); }
     int[] counts = sampleCounts.get(var);
-    if (config.debug > 2) {
+    if (config.debug > 2 && !config.cgRunParallel) {
       System.out.println("Counts = (" + counts[1] + "," + counts[0] + ")");
     }
     return ((double) counts[1]) / (counts[0] + counts[1]);

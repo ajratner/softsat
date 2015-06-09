@@ -35,38 +35,19 @@ public class Exp1 {
     HardSoftDataGenerator dataGen = new HardSoftDataGenerator(config);
     data = dataGen.generateData();
 
-    // Get the clause and var sets
-    // TODO: move this to general util class?
-    HashSet<Clause> clauseSet = new HashSet<Clause>();
-    HashSet<Variable> varSet = new HashSet<Variable>();
-    for (ArrayList<Clause> cluster : data.clusters) {
-      for (Clause clause : cluster) {
-        clauseSet.add(clause);
-        for (Variable var : clause.getVars()) { varSet.add(var); }
-      }
-    }
-    ArrayList<Clause> clauses = new ArrayList<Clause>(clauseSet);
-    ArrayList<Variable> vars = new ArrayList<Variable>(varSet);
 
-    // construct the inference algorithms
-    DecompMCSat alg1 = new DecompMCSat(data, config, "basic");
-    DecompMCSat alg2 = new DecompMCSat(data, config, "decomp");
-
-    // run the CG eval
-    System.out.println("[EXPERIMENT 1]: Running CG eval for BASIC vs. DECOMP");
-    ConditionalGames cgEval12 = new ConditionalGames(clauses, vars, alg1, alg2, config);
-    double score12 = cgEval12.eval();
-
+    // construct the inference algorithms & run CGs
     System.out.println("[EXPERIMENT 1]: Running CG eval for DECOMP vs. BASIC");
-    ConditionalGames cgEval21 = new ConditionalGames(clauses, vars, alg2, alg1, config);
-    double score21 = cgEval21.eval();
+    ConditionalGames cgEval = new ConditionalGames(data, "decomp", "basic", config);
+    //config.cgRunParallel = false;
+    double score = cgEval.eval();
 
     // print results
+    // Note: S_4(Q,R) = -S_4(R,Q)
     System.out.println("********************************************************");
-    System.out.println("[EXPERIMENT 1]: SOCRE for Basic vs. Decomp = " + score12);
-    System.out.println("[EXPERIMENT 1]: SCORE for Decomp vs. Basic = " + score21);
-    System.out.println("Avg. total marginals difference = " + cgEval21.getAvgMarginalDiff());
-    System.out.println("Avg. abs. marginals difference = " + cgEval21.getAvgAbsMarginalDiff());
+    System.out.println("[EXPERIMENT 1]: SCORE for Decomp vs. Basic = " + score);
+    //System.out.println("Avg. total marginals difference = " + cgEval.getAvgMarginalDiff());
+    //System.out.println("Avg. abs. marginals difference = " + cgEval.getAvgAbsMarginalDiff());
     System.out.println("********************************************************");
   }
 }

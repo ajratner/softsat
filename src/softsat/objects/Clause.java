@@ -16,6 +16,7 @@ public class Clause {
    */
   private double logWeight = Double.POSITIVE_INFINITY;
   public double getLogWeight() { return logWeight; }
+  public void setLogWeight(double lw) { logWeight = lw; }
   public boolean isHard() { return logWeight == Double.POSITIVE_INFINITY; }
 
   /**
@@ -24,6 +25,7 @@ public class Clause {
    */
   private ArrayList<Literal> literals;
   public ArrayList<Literal> getLiterals() { return literals; }
+  public void addLiteral(Literal literal) { literals.add(literal); }
   
   public ArrayList<Variable> getVars() {
     ArrayList<Variable> vars = new ArrayList<Variable>();

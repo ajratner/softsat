@@ -8,6 +8,7 @@ public class Literal {
   public Variable getVar() { return var; }
 
   private boolean negated;
+  public boolean getNegated() { return negated; }
 
   public boolean isSat() { return var.getIsTrue() != negated; }
   

@@ -87,4 +87,7 @@ public class Config {
 
   public long MCSatBurnIn = 100;
 
+  // CG CONFIG
+  
+  public boolean cgRunParallel = true;
 }

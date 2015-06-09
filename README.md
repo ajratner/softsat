@@ -18,8 +18,9 @@ Then run with `java -ea -jar softsat.jar`.
 
 
 ### TODO (lower priority)
-* *Clean up HardSoftDataGenerator.java (config, get rid of VariableId class?)*
+* *Clean up HardSoftDataGenerator.java (get rid of VariableId class)*
 * *Move common functions into utility class (see notes in code)*
+* *Clean up the multi-threaded code in ConditionalGames...*
 * Asynchronous / parallel execution!
 * Use Relsat (Bayardo & Pehaushek 2000) to generate larger exact solutions to compare with?
 

@@ -13,6 +13,7 @@ public class Variable {
   public VariableId getVariableId() { return varId; }
 
   public int getClusterId() { return varId.getClusterId(); }
+  public int getIndex() { return varId.getIndex(); }
  
   /**
    * Whether the variable's value is fixed.  Eg for conditional probabilities
@@ -68,5 +69,9 @@ public class Variable {
 
   public Variable(VariableId varId) {
     this.varId = varId;
+  }
+
+  public Variable() {
+    this.varId = null;
   }
 }
