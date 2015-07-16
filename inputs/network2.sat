@@ -1,0 +1,10 @@
+Atoms:
+node: A,B
+
+Objects:
+HasOutgoing(node)
+DirectedEdge(node,node)
+
+Rules:
+inf : EXISTS y | !HasOutgoing(x) v DirectedEdge(x,y)
+inf : !DirectedEdge(x,y) v HasOutgoing(x)
