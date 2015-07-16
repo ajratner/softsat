@@ -12,6 +12,20 @@ import softsat.objects.VariableId;
 public class Data {
   public ArrayList<ArrayList<Clause>> clusters;
   public ArrayList<Clause> softClauses;
+  public ArrayList<Variable> vars;
+
+  private ArrayList<Variable> getAllVars() {
+    HashSet<Variable> varSet = new HashSet<Variable>();
+    for (ArrayList<Clause> clauses : clusters) {
+      for (Clause clause : clauses) {
+        for (Variable var : clause.getVars()) { varSet.add(var); }
+      }
+    }
+    for (Clause clause : softClauses) {
+      for (Variable var : clause.getVars()) { varSet.add(var); }
+    }
+    return new ArrayList<Variable>(varSet);
+  }
 
   public Data deepCopy() {
     ArrayList<ArrayList<Clause>> clustersCopy = new ArrayList<ArrayList<Clause>>();
@@ -65,5 +79,6 @@ public class Data {
   public Data(ArrayList<ArrayList<Clause>> clusters, ArrayList<Clause> softClauses) {
     this.clusters = clusters;
     this.softClauses = softClauses;
+    this.vars = getAllVars();
   }
 }

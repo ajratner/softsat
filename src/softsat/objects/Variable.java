@@ -12,6 +12,9 @@ public class Variable {
   private VariableId varId;
   public VariableId getVariableId() { return varId; }
 
+  private String varIdString;
+  public String getVariableIdString() { return varIdString; }
+
   public int getClusterId() { return varId.getClusterId(); }
   public int getIndex() { return varId.getIndex(); }
  
@@ -64,11 +67,19 @@ public class Variable {
   }
 
   public String toString() {
-    return "<" + varId.toString() + ":" + isTrue + ">";
+    if (varId != null) {
+      return "<" + varId.toString() + ":" + isTrue + ">";
+    } else {
+      return "<" + varIdString.toString() + ":" + isTrue + ">";
+    }
   }
 
   public Variable(VariableId varId) {
     this.varId = varId;
+  }
+
+  public Variable(String varIdString) {
+    this.varIdString = varIdString;
   }
 
   public Variable() {

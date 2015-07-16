@@ -63,7 +63,7 @@ public class Config {
   /**
    * The total number of steps to take in SampleSat to get a sample
    */
-  public long nSampleSatSteps = 1000;
+  public long nSampleSatSteps = 20;
 
   /**
    * The total minimum number of SA steps to take in SampleSat mode after a solution
