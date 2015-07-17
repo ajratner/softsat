@@ -1,0 +1,13 @@
+. : !A1 v R11 v R12 v R13
+. : !A2 v R21 v R22 v R23
+. : !A3 v R31 v R32 v R33
+
+. : !R11 v A1
+. : !R12 v A1
+. : !R13 v A1
+. : !R21 v A2
+. : !R22 v A2
+. : !R23 v A2
+. : !R31 v A3
+. : !R32 v A3
+. : !R33 v A3

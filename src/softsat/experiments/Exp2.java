@@ -19,10 +19,14 @@ public class Exp2 {
 
   public void run() {
     config = new Config();
-    config.nSampleSatSteps = 10000;
-    config.nMCSatSteps = 10000;
+    config.nSampleSatSteps = 1000000;
+    config.nMCSatSteps = 100000;
+    config.pSimAnnealStep = 0.5;
+    config.pRandomStep = 0.5;
+    // Interesting that here min steps post = 100 works the best (0.73), better than 1000... why?
+    config.minStepsPostSatFound = 1000;
 
-    String dataFilePath = "inputs/network2.sat";
+    String dataFilePath = "examples/network4.sat";
     System.out.println("Loading SAT problem from " + dataFilePath);
     SatInputDataGenerator dataGen = new SatInputDataGenerator(dataFilePath);
     data = dataGen.generateData();
@@ -40,7 +44,7 @@ public class Exp2 {
 
     System.out.println("Computing marginals for all vars:");
     for (Variable var : data.vars) {
-      System.out.println(var + " : " + mcsat.estimateMarginal(var, false));
+      System.out.println(var.getVariableIdString() + " : " + mcsat.estimateMarginal(var, false));
     }
   }
 }
