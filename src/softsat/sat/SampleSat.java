@@ -51,18 +51,6 @@ public class SampleSat extends SatSolver {
     int stepsPostSatFound = 0;
     for (long step = 0; step < config.nSampleSatSteps; step++) {
 
-      // TESTING >>>
-      System.out.println("UNSAT="+unsat.size);
-      int unsatClausesDirect = 0;
-      for (Clause clause : getActiveClauses()) {
-        if (!clause.isSat()) { unsatClausesDirect += 1; }
-      }
-      System.out.println("UNSAT according to direct calc="+unsatClausesDirect);
-      System.out.println("STEPS POST SAT FOUND="+stepsPostSatFound);
-      for (Variable var : getActiveVars()) {
-        System.out.println(var);
-      }
-
       // Per the MC-SAT implementation, in SampleSat mode we continue after finding a soln
       // Note: temporary assert to see if this works okay (not in tuffy)
       if (satFound) { stepsPostSatFound += 1; }

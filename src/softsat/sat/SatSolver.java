@@ -74,5 +74,12 @@ abstract class SatSolver {
     }
     this.activeVars = new ArrayList<Variable>(activeVarsSet);
     this.config = config;
+
+    // Check that the var -> clause pointers are in place
+    for (Clause clause : this.activeClauses) {
+      for (Variable var : clause.getVars()) {
+        assert var.getClausesIn().contains(clause);
+      }
+    }
   }
 }

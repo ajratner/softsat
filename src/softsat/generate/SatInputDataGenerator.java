@@ -28,10 +28,8 @@ public class SatInputDataGenerator {
    * where . = inf. weight and ! is used for negation
   */
   public Data generateData() {
-    ArrayList<Clause> hardClauses = new ArrayList<Clause>();
-    ArrayList<Clause> softClauses = new ArrayList<Clause>();
+    ArrayList<Clause> clauses = new ArrayList<Clause>();
     HashMap<String, Variable> vars = new HashMap<String, Variable>();
-
     try {
       for (String line : Files.readAllLines(Paths.get(inputFilePath))) {
         String[] l = line.trim().split("\\s*:\\s*");
@@ -53,18 +51,28 @@ public class SatInputDataGenerator {
           var = vars.get(literalString);
           clause.addLiteral(new Literal(var, negated));
         }
-        if (clause.isHard()) {
-          hardClauses.add(clause);
-        } else {
-          softClauses.add(clause);
-        }
+        clauses.add(clause);
       }
     } catch (IOException ex) {
       System.out.println(ex.toString());
       return null;
     }
 
+    // var -> clause pointers
+    for (Clause clause : clauses) {
+      for (Variable var : clause.getVars()) { var.addToClausesIn(clause); }
+    }
+
     // put everything in a single cluster / soft clauses list
+    ArrayList<Clause> hardClauses = new ArrayList<Clause>();
+    ArrayList<Clause> softClauses = new ArrayList<Clause>();
+    for (Clause clause : clauses) {
+      if (clause.isHard()) {
+        hardClauses.add(clause);
+      } else {
+        softClauses.add(clause);
+      }
+    }
     ArrayList<ArrayList<Clause>> clusters = new ArrayList<ArrayList<Clause>>();
     clusters.add(hardClauses);
     return new Data(clusters, softClauses);

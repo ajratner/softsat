@@ -19,6 +19,8 @@ public class Exp2 {
 
   public void run() {
     config = new Config();
+    config.nSampleSatSteps = 10000;
+    config.nMCSatSteps = 10000;
 
     String dataFilePath = "inputs/network2.sat";
     System.out.println("Loading SAT problem from " + dataFilePath);
